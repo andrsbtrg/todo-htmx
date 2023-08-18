@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title></title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://unpkg.com/htmx.org@1.9.4"></script>
+	<link href="/styles.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+	<h1>Login</h1>
+
+	<form hx-post="/api/login">
+		<div>
+			<label for="username">Username </label>
+			<input type="text" name="username" id="username" required />
+		</div>
+		<div>
+			<label for="password">Password </label>
+			<input type="password" name="password" id="password" required />
+		</div>
+		<div>
+			<input type="submit" value="Login!" />
+		</div>
+	</form>
+</body>
+
+</html>

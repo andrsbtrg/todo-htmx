@@ -1,12 +1,12 @@
-// TODO: Implement some error Struct
-
 use askama_axum::IntoResponse;
 use axum::http::StatusCode;
 
 pub type Result<T> = core::result::Result<T, Error>;
 
+/// An error Enum for the server
 #[derive(Debug)]
 pub enum Error {
+    /// Login failed
     LoginFail,
 }
 

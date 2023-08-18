@@ -5,10 +5,12 @@ use std::{
 };
 
 mod error;
+mod models;
 mod templates;
 mod web;
+
 use askama_axum::Response;
-use templates::ItemsTemplate;
+use templates::{HeaderUserTemplate, ItemsTemplate};
 use tower_cookies::CookieManagerLayer;
 use tower_http::services::ServeDir;
 
