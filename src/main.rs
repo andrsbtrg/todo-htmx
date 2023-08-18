@@ -10,7 +10,7 @@ mod templates;
 mod web;
 
 use askama_axum::Response;
-use templates::{HeaderUserTemplate, ItemsTemplate};
+use templates::{HeaderUserTemplate, ItemsTemplate, StartTemplate};
 use tower_cookies::CookieManagerLayer;
 use tower_http::services::ServeDir;
 
@@ -56,11 +56,16 @@ fn routes_app() -> Router {
 
     Router::new()
         .route("/items", get(get_items))
+        .route("/", get(home))
         .with_state(state)
 }
 
 fn routes_static() -> Router {
     Router::new().nest_service("/", get_service(ServeDir::new("./static")))
+}
+
+async fn home() -> StartTemplate {
+    StartTemplate {}
 }
 
 async fn get_items(State(state): State<AppState>) -> ItemsTemplate {

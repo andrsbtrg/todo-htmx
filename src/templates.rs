@@ -11,3 +11,7 @@ pub struct ItemsTemplate {
 pub struct HeaderUserTemplate {
     pub name: String,
 }
+
+#[derive(Template)]
+#[template(path = "start.html")]
+pub struct StartTemplate {}
