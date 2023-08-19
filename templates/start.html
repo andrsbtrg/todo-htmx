@@ -3,11 +3,10 @@
 {% block title %}Start{% endblock %}
 
 {% block header %}
-<a href="/login">Login</a>
 {% endblock %}
 
 {% block content %}
-<h1>Index</h1>
-<p>Hello, world!</p>
+<h1>Home</h1>
+<p>Hello, {{username}}!</p>
 {% call super() %}
 {% endblock %}

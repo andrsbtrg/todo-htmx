@@ -14,4 +14,6 @@ pub struct HeaderUserTemplate {
 
 #[derive(Template)]
 #[template(path = "start.html")]
-pub struct StartTemplate {}
+pub struct StartTemplate {
+    pub username: String,
+}

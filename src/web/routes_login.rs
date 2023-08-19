@@ -1,4 +1,4 @@
-use crate::{templates, web, Error, Result};
+use crate::{web, Error, Result};
 use askama_axum::IntoResponse;
 use axum::{http::HeaderMap, routing::post, Form, Router};
 use serde::Deserialize;
@@ -18,20 +18,17 @@ async fn api_login(
     }
 
     // FIXME: Implement real cookies
-    cookies.add(Cookie::new(web::AUTH_TOKEN, "user-1.exp.sign"));
+    let cookie = Cookie::build(web::AUTH_TOKEN, "user-1.exp.sign")
+        .path("/")
+        .finish();
+    cookies.add(cookie);
 
-    // let body = Json(serde_json::json!({
-    //     "result": {
-    //     "success": true
-    // }
-    // }));
-    // Ok(body)
     let mut headers = HeaderMap::new();
     headers.insert("HX-Redirect", "/".parse().unwrap());
 
     // let user_header = templates::HeaderUserTemplate {
     //     name: payload.username,
-    // };
+    // }
 
     Ok(headers)
 }
