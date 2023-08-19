@@ -5,7 +5,7 @@ use crate::{
     web::AUTH_TOKEN,
 };
 use askama_axum::IntoResponse;
-use axum::{extract::State, http::HeaderMap, routing::get, Router};
+use axum::{extract::State, routing::get, Router};
 use tower_cookies::Cookies;
 
 #[derive(Clone)]
