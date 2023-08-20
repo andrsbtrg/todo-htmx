@@ -10,21 +10,24 @@
 </head>
 
 <body>
-	<h1>Login</h1>
+	<div id="content">
 
-	<form hx-post="/api/login">
-		<div>
-			<label for="username">Username </label>
-			<input type="text" name="username" id="username" required />
-		</div>
-		<div>
-			<label for="password">Password </label>
-			<input type="password" name="password" id="password" required />
-		</div>
-		<div>
-			<input type="submit" value="Login!" />
-		</div>
-	</form>
+		<h1>Login</h1>
+
+		<form hx-post="/api/login">
+			<div>
+				<label for="username">Username </label>
+				<input type="text" name="username" id="username" required />
+			</div>
+			<div>
+				<label for="password">Password </label>
+				<input type="password" name="password" id="password" required />
+			</div>
+			<div>
+				<input type="submit" value="Login!" />
+			</div>
+		</form>
+	</div>
 </body>
 
 </html>

@@ -6,9 +6,10 @@ use sqlx::{FromRow, Sqlite, SqlitePool};
 /// The ticket that will be stored and sent to the client
 #[derive(Serialize, Clone, Debug, FromRow)]
 pub struct Ticket {
-    id: u32,
+    pub id: u32,
     pub title: String,
-    status: String,
+    pub status: String,
+    pub description: String,
 }
 
 /// This helps create tickets, thus it needs Deserialize
@@ -16,12 +17,14 @@ pub struct Ticket {
 pub struct TicketCreate {
     pub title: String,
     pub status: String,
+    pub description: String,
 }
 
 impl TicketCreate {
-    pub fn new(title: impl Into<String>) -> Self {
+    pub fn new(title: impl Into<String>, description: impl Into<String>) -> Self {
         TicketCreate {
             title: title.into(),
+            description: description.into(),
             status: "Open".to_string(),
         }
     }
@@ -40,10 +43,11 @@ impl ModelController {
 
     pub async fn create_ticket(&self, ticket_fc: TicketCreate) -> Result<Ticket> {
         match sqlx::query_as::<Sqlite, Ticket>(
-            r#"INSERT INTO tickets (title, status) VALUES (?,?) RETURNING *"#,
+            r#"INSERT INTO tickets (title, status, description) VALUES (?,?,?) RETURNING *"#,
         )
         .bind(ticket_fc.title)
         .bind("Open")
+        .bind(ticket_fc.description)
         .fetch_one(&self.db)
         .await
         {

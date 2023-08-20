@@ -1,8 +1,62 @@
 body {
 	color: #eee;
 	background: #202020;
-	margin: 5ch;
+	/* margin: 5ch; */
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	margin: 0;
+	padding: 0;
+	/* background-color: #f0f0f0; */
 }
 body a {
 	color: #809fff;
+}
+
+#content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.card {
+  background-color: #222;
+  color: #fff;
+  border-radius: 0px;
+  margin: 1px;
+  padding: 1px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.card-header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.card-body {
+  font-size: 16px;
+}
+
+.card-body p {
+  margin: 5px 0;
+}
+
+/* Brutalist Styling */
+.card {
+  border: 1px solid white;
+  background-color: white;
+  box-shadow: none;
+}
+
+.card-header {
+  color: #fff;
+  text-align: center;
+  background-color: #333;
+  padding: 10px;
+}
+
+.card-body {
+  background-color: #444;
+  padding: 10px;
+  border-top: 0px solid white;
 }
