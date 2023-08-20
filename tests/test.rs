@@ -15,9 +15,10 @@ async fn login_should_work() {
     let req_login = hc
         .do_post(
             "/api/login",
-            json!({
-                "username": "dev", "password": "password"
-            }),
+            (
+                r#"username=dev&password=password"#,
+                "application/x-www-form-urlencoded",
+            ),
         )
         .await
         .unwrap();
@@ -27,9 +28,10 @@ async fn login_should_work() {
     let req_login_fail = hc
         .do_post(
             "/api/login",
-            json!({
-                "username": "dev", "password": "password123"
-            }),
+            (
+                r#"username=dev&password=wrong"#,
+                "application/x-www-form-urlencoded",
+            ),
         )
         .await
         .unwrap();
