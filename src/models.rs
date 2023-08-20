@@ -71,4 +71,14 @@ impl ModelController {
             Err(_) => Err(Error::NoTicketsFound),
         }
     }
+
+    pub async fn delete_ticket(&self, id: i32) {
+        match sqlx::query!("DELETE from tickets WHERE id=(?)", id)
+            .execute(&self.db)
+            .await
+        {
+            Ok(_) => println!("Deleted ticket id {} from database.", id),
+            Err(_) => todo!(),
+        }
+    }
 }

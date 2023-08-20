@@ -1,5 +1,6 @@
 use axum::{
-    routing::{get, post},
+    extract::Path,
+    routing::{delete, get, post},
     Extension, Form, Router,
 };
 use serde::Deserialize;
@@ -13,6 +14,7 @@ pub fn routes() -> Router {
     Router::new()
         .route("/tickets", get(get_tickets))
         .route("/tickets", post(create_ticket))
+        .route("/tickets/:id", delete(delete_ticket))
 }
 
 async fn get_tickets(Extension(mc): Extension<ModelController>) -> TicketsTemplate {
@@ -31,6 +33,10 @@ async fn create_ticket(
     let ticket = mc.create_ticket(ticket_fc).await.unwrap();
 
     TicketTemplate { ticket }
+}
+
+async fn delete_ticket(Extension(mc): Extension<ModelController>, Path(id): Path<i32>) {
+    mc.delete_ticket(id).await;
 }
 
 #[derive(Debug, Deserialize)]
