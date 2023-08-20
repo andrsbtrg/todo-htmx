@@ -23,13 +23,13 @@ impl Settings {
         let db_url = self.db_connection_string();
 
         if !Sqlite::database_exists(&db_url).await.unwrap_or(false) {
-            println!("Creating database {}", &db_url);
+            println!("->> {:<12} - CREATING DATABASE {}", "STARTUP", &db_url);
             match Sqlite::create_database(&db_url).await {
-                Ok(_) => println!("Create db success"),
+                Ok(_) => println!("->> {:<12} - DATABASE CREATED", "STARTUP"),
                 Err(error) => panic!("error: {}", error),
             }
         } else {
-            println!("Database already exists");
+            println!("->> {:<12} - DATABASE EXISTS {}", "STARTUP", &db_url);
         }
     }
 }

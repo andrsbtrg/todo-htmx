@@ -1,6 +1,7 @@
 use crate::{Error, Result};
 
 use serde::{Deserialize, Serialize};
+use sqlx::SqlitePool;
 
 // REGION: contact types
 
@@ -19,11 +20,13 @@ pub struct ContactCreate {
 // ENDREGION: contact types
 
 // REGION: model controller
-pub struct ModelController {}
+pub struct ModelController {
+    db: SqlitePool,
+}
 
 impl ModelController {
-    pub async fn new() -> Result<Self> {
-        Ok(Self {})
+    pub async fn new(db: SqlitePool) -> Result<Self> {
+        Ok(Self { db })
     }
 }
 // ENDREGION: model controller

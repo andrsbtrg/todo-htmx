@@ -1,10 +1,11 @@
+pub mod routes_home;
+pub mod routes_login;
+pub mod routes_static;
+
 use askama_axum::Response;
 use axum::{middleware, Extension, Router};
 use sqlx::SqlitePool;
 use tower_cookies::CookieManagerLayer;
-pub mod routes_home;
-pub mod routes_login;
-pub mod routes_static;
 
 pub const AUTH_TOKEN: &str = "auth-token";
 

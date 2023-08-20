@@ -36,6 +36,7 @@ async fn home(cookies: Cookies) -> axum::response::Response {
     }
 }
 
+// TODO! delete me
 async fn get_items(State(state): State<AppState>) -> ItemsTemplate {
     println!("->> {:<12} - get_items", "HANDLER");
     let mut counter = state.counter.lock().expect("state has been poisoned.");
