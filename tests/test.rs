@@ -1,4 +1,18 @@
-use serde_json::json;
+#[tokio::test]
+async fn create_ticket() {
+    let hc = httpc_test::new_client("http://127.0.0.1:3000").unwrap();
+
+    let status = hc.do_post("/tickets", r#""#).await.unwrap().status();
+    assert_eq!(status, 200);
+}
+
+#[tokio::test]
+async fn get_tickets() {
+    let hc = httpc_test::new_client("http://127.0.0.1:3000").unwrap();
+
+    let status = hc.do_get("/tickets").await.unwrap().status();
+    assert_eq!(status, 200);
+}
 
 #[tokio::test]
 async fn root_should_work() {
