@@ -1,0 +1,35 @@
+use config::{Config, File};
+use sqlx::{migrate::MigrateDatabase, Sqlite};
+
+#[derive(serde::Deserialize, serde::Serialize)]
+pub struct Settings {
+    pub application_port: u16,
+    pub database_name: String,
+}
+
+pub fn get_configuration() -> Result<Settings, config::ConfigError> {
+    let builder = Config::builder().add_source(File::with_name("configuration"));
+
+    let config = builder.build()?;
+    config.try_deserialize()
+}
+
+impl Settings {
+    pub fn db_connection_string(&self) -> String {
+        format!("sqlite://{}.db", self.database_name)
+    }
+
+    pub async fn db_check(&self) {
+        let db_url = self.db_connection_string();
+
+        if !Sqlite::database_exists(&db_url).await.unwrap_or(false) {
+            println!("Creating database {}", &db_url);
+            match Sqlite::create_database(&db_url).await {
+                Ok(_) => println!("Create db success"),
+                Err(error) => panic!("error: {}", error),
+            }
+        } else {
+            println!("Database already exists");
+        }
+    }
+}
