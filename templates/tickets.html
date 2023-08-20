@@ -8,16 +8,16 @@
 {% block content %}
 <h1>My Tickets</h1>
 
-<form>
-	<div>
-		<label for="title">Title</label>
-		<input type="text" name="title" id="title" />
-	</div>
-	<div>
-		<label for="description">description</label>
-		<input type="text" name="description" id="description" />
-	</div>
-	<button hx-post="/tickets" hx-target="#tickets" hx-swap="afterbegin" >Create</button>
+<form class="create-form">
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" name="title" id="title" class="form-input" />
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <input type="text" name="description" id="description" class="form-input" />
+    </div>
+    <button class="create-button" hx-post="/tickets" hx-target="#tickets" hx-swap="afterbegin">Create</button>
 </form>
 
 <div id="tickets">
@@ -28,7 +28,9 @@
 				<p>Description: {{ ticket.description }}</p>
 				<p>ID: {{ticket.id}}</p>
 				<p>Status: {{ticket.status}}</p>
-				<button hx-delete="/tickets/{{ticket.id}}" hx-target="closest .card" hx-swap="delete">Delete</button>
+				<button class="delete-button" hx-delete="/tickets/{{ ticket.id }}" hx-target="closest .card" hx-swap="delete">
+            Delete 🗑️
+				</button>
 			</div>
 		</div>
 	{% endfor %}

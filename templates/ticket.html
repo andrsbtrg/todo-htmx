@@ -5,6 +5,8 @@
 		<p>ID: {{ticket.id}}</p>
 		<p>Status: {{ticket.status}}</p>
 
-		<button hx-delete="/tickets/{{ticket.id}}" hx-target="closest .card" hx-swap="delete">Delete</button>
+		<button class="delete-button" hx-delete="/tickets/{{ ticket.id }}" hx-target="closest .card" hx-swap="delete">
+			Delete 🗑️
+		</button>
 	</div>
 </div>

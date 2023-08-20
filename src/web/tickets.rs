@@ -36,6 +36,7 @@ async fn create_ticket(
 }
 
 async fn delete_ticket(Extension(mc): Extension<ModelController>, Path(id): Path<i32>) {
+    println!("->> {:<12} - delete_ticket", "HANDLER");
     mc.delete_ticket(id).await;
 }
 
