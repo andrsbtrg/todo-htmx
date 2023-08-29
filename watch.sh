@@ -1,2 +1,2 @@
 #!/bin/bash
-cargo watch -w src/ -w templates/ -w static/ -x run
+cargo watch -q -w src/ -w templates/ -w static/ -x run

@@ -1,4 +1,5 @@
 use crate::ctx::Context;
+use crate::models::ModelController;
 use crate::web::AUTH_TOKEN;
 use crate::{Error, Result};
 use axum::extract::FromRequestParts;
@@ -6,9 +7,9 @@ use axum::http::request::Parts;
 use axum::http::Request;
 use axum::middleware::Next;
 use axum::response::Response;
-use axum::{async_trait, RequestPartsExt};
+use axum::{async_trait, Extension};
 use lazy_regex::regex_captures;
-use tower_cookies::Cookies;
+use tower_cookies::{Cookie, Cookies};
 
 pub async fn mw_require_auth<B>(
     ctx: Result<Context>,
@@ -22,6 +23,35 @@ pub async fn mw_require_auth<B>(
     Ok(next.run(req).await)
 }
 
+pub async fn mw_async_resolver<B>(
+    _mc: Extension<ModelController>,
+    cookies: Cookies,
+    mut req: Request<B>,
+    next: Next<B>,
+) -> Result<Response> {
+    println!("->> {:<12} - mw_async_resolver", "MIDDLEWARE");
+
+    let auth_token = cookies.get(AUTH_TOKEN).map(|c| c.value().to_string());
+
+    let result_ctx = match auth_token
+        .ok_or(Error::AuthFailNoAuthToken)
+        .and_then(parse_token)
+    {
+        Ok((user_id, _exp, _sign)) => Ok(Context::new(user_id)),
+        Err(e) => Err(e),
+    };
+
+    // Remove the cookie if something went wrong
+    //
+    if result_ctx.is_err() && matches!(result_ctx, Err(Error::AuthFailNoAuthToken)) {
+        cookies.remove(Cookie::named(AUTH_TOKEN))
+    }
+
+    req.extensions_mut().insert(result_ctx);
+
+    Ok(next.run(req).await)
+}
+
 #[async_trait]
 impl<S: Send + Sync> FromRequestParts<S> for Context {
     type Rejection = Error;
@@ -29,16 +59,11 @@ impl<S: Send + Sync> FromRequestParts<S> for Context {
     async fn from_request_parts(parts: &mut Parts, _state: &S) -> Result<Self> {
         println!("->> {:<12} - Ctx", "EXTRACTOR");
 
-        // Use the cookies extractor
-        let cookies = parts.extract::<Cookies>().await.unwrap();
-
-        let auth_token = cookies.get(AUTH_TOKEN).map(|c| c.value().to_string());
-
-        let (user_id, _exp, _sign) = auth_token
-            .ok_or(Error::AuthFailNoAuthToken)
-            .and_then(parse_token)?;
-
-        Ok(Context::new(user_id))
+        parts
+            .extensions
+            .get::<Result<Context>>()
+            .ok_or(Error::AuthFailCtxNotInRequestExt)?
+            .clone()
     }
 }
 

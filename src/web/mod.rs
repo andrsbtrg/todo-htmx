@@ -11,6 +11,8 @@ use tower_cookies::CookieManagerLayer;
 
 use crate::models::ModelController;
 
+use self::mw_auth::mw_async_resolver;
+
 pub const AUTH_TOKEN: &str = "auth-token";
 
 pub fn app(pool: SqlitePool) -> Router {
@@ -23,6 +25,10 @@ pub fn app(pool: SqlitePool) -> Router {
         .merge(login::routes())
         .merge(routes_api)
         .layer(middleware::map_response(main_response_mapper))
+        .layer(middleware::from_fn_with_state(
+            model_controller.clone(),
+            mw_async_resolver,
+        ))
         .layer(CookieManagerLayer::new())
         .layer(Extension(model_controller))
         .fallback_service(routes_static::routes())

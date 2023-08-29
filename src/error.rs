@@ -4,7 +4,7 @@ use axum::http::StatusCode;
 pub type Result<T> = core::result::Result<T, Error>;
 
 /// An error Enum for the server
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum Error {
     /// Login failed
     LoginFail,
@@ -18,6 +18,7 @@ pub enum Error {
     AuthFailNoAuthToken,
     EmptyTicket,
     AuthFailTokenWrongFormat,
+    AuthFailCtxNotInRequestExt,
 }
 
 impl IntoResponse for Error {
