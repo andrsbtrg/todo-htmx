@@ -10,7 +10,14 @@ pub enum Error {
     LoginFail,
     /// Ticket creation failed
     TicketCreationFailed,
+    /// No tickets
     NoTicketsFound,
+    /// The id provided was not found
+    TicketNotFound,
+    /// No Auth Token cookie found
+    AuthFailNoAuthToken,
+    EmptyTicket,
+    AuthFailTokenWrongFormat,
 }
 
 impl IntoResponse for Error {

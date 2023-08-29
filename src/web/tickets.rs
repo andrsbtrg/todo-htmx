@@ -6,6 +6,7 @@ use axum::{
 use serde::Deserialize;
 
 use crate::{
+    ctx::Context,
     models::{ModelController, TicketCreate},
     templates::{TicketTemplate, TicketsTemplate},
 };
@@ -17,27 +18,33 @@ pub fn routes() -> Router {
         .route("/tickets/:id", delete(delete_ticket))
 }
 
-async fn get_tickets(Extension(mc): Extension<ModelController>) -> TicketsTemplate {
+async fn get_tickets(Extension(mc): Extension<ModelController>, ctx: Context) -> TicketsTemplate {
     println!("->> {:<12} - get_tickets", "HANDLER");
-    let tickets = mc.get_tickets().await.unwrap_or_default();
+    let tickets = mc.get_tickets(ctx).await.unwrap_or_default();
     return TicketsTemplate { tickets };
 }
 
 async fn create_ticket(
     Extension(mc): Extension<ModelController>,
+    ctx: Context,
     Form(payload): Form<TicketPayload>,
 ) -> TicketTemplate {
     println!("->> {:<12} - create_tickets", "HANDLER");
+    if payload.title.is_empty() {}
     let ticket_fc = TicketCreate::new(payload.title, payload.description);
 
-    let ticket = mc.create_ticket(ticket_fc).await.unwrap();
+    let ticket = mc.create_ticket(ctx, ticket_fc).await.unwrap();
 
     TicketTemplate { ticket }
 }
 
-async fn delete_ticket(Extension(mc): Extension<ModelController>, Path(id): Path<i32>) {
+async fn delete_ticket(
+    Extension(mc): Extension<ModelController>,
+    ctx: Context,
+    Path(id): Path<i32>,
+) {
     println!("->> {:<12} - delete_ticket", "HANDLER");
-    mc.delete_ticket(id).await;
+    mc.delete_ticket(ctx, id).await;
 }
 
 #[derive(Debug, Deserialize)]

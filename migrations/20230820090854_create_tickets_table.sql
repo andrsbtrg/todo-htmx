@@ -3,5 +3,6 @@ CREATE TABLE tickets(
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	title TEXT NOT NULL,
 	status TEXT,
-	description TEXT
+	description TEXT,
+	creator_id INTEGER
 );

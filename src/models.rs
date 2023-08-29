@@ -1,4 +1,4 @@
-use crate::{Error, Result};
+use crate::{ctx::Context, Error, Result};
 
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, Sqlite, SqlitePool};
@@ -7,6 +7,7 @@ use sqlx::{FromRow, Sqlite, SqlitePool};
 #[derive(Serialize, Clone, Debug, FromRow)]
 pub struct Ticket {
     pub id: u32,
+    pub creator_id: u32,
     pub title: String,
     pub status: String,
     pub description: String,
@@ -41,13 +42,15 @@ impl ModelController {
         Ok(Self { db })
     }
 
-    pub async fn create_ticket(&self, ticket_fc: TicketCreate) -> Result<Ticket> {
+    pub async fn create_ticket(&self, ctx: Context, ticket_fc: TicketCreate) -> Result<Ticket> {
+        let creator_id = ctx.user_id();
         match sqlx::query_as::<Sqlite, Ticket>(
-            r#"INSERT INTO tickets (title, status, description) VALUES (?,?,?) RETURNING *"#,
+            r#"INSERT INTO tickets (title, status, description, creator_id) VALUES (?,?,?,?) RETURNING *;"#,
         )
         .bind(ticket_fc.title)
         .bind("Open")
         .bind(ticket_fc.description)
+        .bind(creator_id)
         .fetch_one(&self.db)
         .await
         {
@@ -62,7 +65,8 @@ impl ModelController {
         }
     }
 
-    pub async fn get_tickets(&self) -> Result<Vec<Ticket>> {
+    pub async fn get_tickets(&self, ctx: Context) -> Result<Vec<Ticket>> {
+        let _creator_id = ctx.user_id();
         match sqlx::query_as::<_, Ticket>("SELECT * FROM tickets")
             .fetch_all(&self.db)
             .await
@@ -72,13 +76,20 @@ impl ModelController {
         }
     }
 
-    pub async fn delete_ticket(&self, id: i32) {
+    pub async fn delete_ticket(&self, ctx: Context, id: i32) -> Result<()> {
+        let _creator_id = ctx.user_id();
         match sqlx::query!("DELETE from tickets WHERE id=(?)", id)
             .execute(&self.db)
             .await
         {
-            Ok(_) => println!("Deleted ticket id {} from database.", id),
-            Err(_) => todo!(),
+            Ok(res) => {
+                println!("{:?}", res);
+                return Ok(());
+            }
+            Err(e) => {
+                eprint!("ERROR: {:?}", e);
+                return Err(Error::TicketNotFound);
+            }
         }
     }
 }

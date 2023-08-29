@@ -10,7 +10,6 @@ pub fn routes() -> Router {
 
 async fn home(cookies: Cookies) -> axum::response::Response {
     if let Some(user_cookie) = cookies.get(AUTH_TOKEN) {
-        println!("Cookie!");
         let template = StartTemplate {
             username: user_cookie.value().to_owned(),
         };
