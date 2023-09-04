@@ -1,9 +1,8 @@
 use crate::ctx::Context;
-use crate::{templates::StartTemplate, web::AUTH_TOKEN};
+use crate::templates::StartTemplate;
 use askama_axum::IntoResponse;
 use axum::routing::get;
 use axum::Router;
-use tower_cookies::Cookies;
 
 pub fn routes() -> Router {
     Router::new().route("/", get(home))

@@ -44,10 +44,11 @@ async fn delete_ticket(
     Path(id): Path<i32>,
 ) {
     println!("->> {:<12} - delete_ticket", "HANDLER");
-    mc.delete_ticket(ctx, id).await;
+    mc.delete_ticket(ctx, id).await.unwrap();
 }
 
 #[derive(Debug, Deserialize)]
+/// The payload coming from a Form to create a new ticket
 struct TicketPayload {
     title: String,
     description: String,
