@@ -19,6 +19,7 @@ pub enum Error {
     EmptyTicket,
     AuthFailTokenWrongFormat,
     AuthFailCtxNotInRequestExt,
+    UserCreateFail,
 }
 
 impl IntoResponse for Error {

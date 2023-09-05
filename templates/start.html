@@ -3,10 +3,16 @@
 {% block title %}Start{% endblock %}
 
 {% block header %}
+<div class="header-left"> 
+  <h3>User: <a href="/profile">{{username}}</a> </h3>
+</div>
+<div class="header-right">
+   <a href="/tickets">Tickets</a>
+   <a href="/logout">Logout</a>
+</div>
 {% endblock %}
 
 {% block content %}
 <h1>Home</h1>
 <p>Hello, {{username}}!</p>
-<a href="/tickets" hx-boost="true">Tickets</a>
 {% endblock %}

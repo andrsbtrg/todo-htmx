@@ -9,14 +9,15 @@
 	<script src="https://unpkg.com/htmx.org@1.9.4"></script>
 </head>
 
-<header>
-	<div id="user-header">
+<header hx-boost="true">
+	<div id="user-header" class="header">
 		{% block header %}<p>Placeholder header</p>{% endblock %}
 	</div>
 </header>
 
 <body>
-	<div id="content">
+	<div id="modal"> </div>
+	<div id="content" hx-boost="true">
 		{% block content %}<p>Placeholder content</p>{% endblock %}
 	</div>
 </body>

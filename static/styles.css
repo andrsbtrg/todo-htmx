@@ -9,6 +9,39 @@ body {
 body a {
     color: #809fff;
 }
+/* Apply a background color and styles for the header */
+.header {
+    background-color: #333; /* You can change the color to your preference */
+    color: #fff; /* Text color for the header */
+    padding: 10px; /* Adjust the padding as needed */
+    position: fixed; /* Make the header fixed at the top */
+    top: 0; /* Position it at the top of the viewport */
+    left: 0; /* Align it to the left edge */
+    right: 0; /* Align it to the right edge */
+    z-index: 100; /* Ensure it's above other content */
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space elements evenly horizontally */
+    align-items: center; /* Center vertically */
+}
+
+/* Style the h3 and a elements within the header-left */
+.header-left h3 {
+    margin: 0;
+    font-size: 18px;
+    display: inline; /* Display as an inline element */
+}
+
+.header-left a {
+    text-decoration: none;
+    color: #fff; /* Link color */
+}
+
+/* Style the links within the header-right */
+.header-right a {
+    text-decoration: none;
+    color: #fff; /* Link color */
+    margin-left: 10px; /* Add spacing between links */
+}
 
 input:invalid {
   border: 2px dashed red;

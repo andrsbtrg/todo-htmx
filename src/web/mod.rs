@@ -1,6 +1,9 @@
 pub mod home;
 pub mod login;
+pub mod logout;
 pub mod mw_auth;
+pub mod profile;
+pub mod register;
 pub mod routes_static;
 pub mod tickets;
 
@@ -23,6 +26,9 @@ pub fn app(pool: SqlitePool) -> Router {
     Router::new()
         .merge(home::routes())
         .merge(login::routes())
+        .merge(logout::routes())
+        .merge(register::routes())
+        .merge(profile::routes())
         .merge(routes_api)
         .layer(middleware::map_response(main_response_mapper))
         .layer(middleware::from_fn_with_state(

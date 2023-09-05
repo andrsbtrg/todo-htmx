@@ -20,8 +20,13 @@ pub fn routes() -> Router {
 
 async fn get_tickets(Extension(mc): Extension<ModelController>, ctx: Context) -> TicketsTemplate {
     println!("->> {:<12} - get_tickets", "HANDLER");
-    let tickets = mc.get_tickets(ctx).await.unwrap_or_default();
-    return TicketsTemplate { tickets };
+    let tickets = mc.get_tickets(&ctx).await.unwrap_or_default();
+    let username = ctx.username();
+
+    TicketsTemplate {
+        tickets,
+        username: username.to_string(),
+    }
 }
 
 async fn create_ticket(

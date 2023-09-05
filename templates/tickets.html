@@ -3,6 +3,13 @@
 {% block title %}My Tickets{% endblock %}
 
 {% block header %}
+<div class="header-left"> 
+  <h3>Logged in: <a hx-select="#modal" href="/profile">{{username}}</a> </h3>
+</div>
+<div class="header-right">
+   <a href="/">Home</a>
+   <a href="/logout">Logout</a>
+</div>
 {% endblock %}
 
 {% block content %}
