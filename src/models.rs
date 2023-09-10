@@ -31,6 +31,11 @@ impl TicketCreate {
     }
 }
 
+pub struct UserCreate {
+    pub username: String,
+    pub hashed_password: String,
+}
+
 /// model controller
 #[derive(Clone)]
 pub struct ModelController {
@@ -65,9 +70,21 @@ impl ModelController {
         }
     }
 
-    pub async fn get_tickets(&self, ctx: Context) -> Result<Vec<Ticket>> {
+    pub async fn get_tickets(&self, ctx: &Context) -> Result<Vec<Ticket>> {
         let _creator_id = ctx.user_id();
         match sqlx::query_as::<_, Ticket>("SELECT * FROM tickets")
+            .fetch_all(&self.db)
+            .await
+        {
+            Ok(tickets_result) => Ok(tickets_result),
+            Err(_) => Err(Error::NoTicketsFound),
+        }
+    }
+
+    pub async fn get_tickets_from_user(&self, ctx: Context) -> Result<Vec<Ticket>> {
+        let _creator_id = ctx.user_id();
+        match sqlx::query_as::<_, Ticket>("SELECT * FROM tickets WHERE creator_id=(?)")
+            .bind(_creator_id)
             .fetch_all(&self.db)
             .await
         {
@@ -82,8 +99,7 @@ impl ModelController {
             .execute(&self.db)
             .await
         {
-            Ok(res) => {
-                println!("{:?}", res);
+            Ok(_) => {
                 return Ok(());
             }
             Err(e) => {
@@ -91,5 +107,45 @@ impl ModelController {
                 return Err(Error::TicketNotFound);
             }
         }
+    }
+
+    pub async fn register_new(&self, payload: UserCreate) -> Result<u32> {
+        let user_id: u32 = sqlx::query_scalar(
+            r#"INSERT INTO users (username, password) VALUES (?, ?) RETURNING user_id ;"#,
+        )
+        .bind(&payload.username)
+        .bind(&payload.hashed_password)
+        .fetch_one(&self.db)
+        .await
+        .map_err(|_| Error::UserCreateFail)?;
+
+        Ok(user_id)
+    }
+
+    pub async fn get_pwd(&self, username: &str) -> Option<String> {
+        sqlx::query_scalar(r#"SELECT password FROM users WHERE username=(?);"#)
+            .bind(&username)
+            .fetch_optional(&self.db)
+            .await
+            .unwrap()
+    }
+
+    pub async fn get_user_id(&self, username: &str) -> Result<u32> {
+        let user_id: u32 = sqlx::query_scalar(r#"SELECT user_id FROM users WHERE username=(?);"#)
+            .bind(username)
+            .fetch_one(&self.db)
+            .await
+            .map_err(|_| Error::UserCreateFail)?;
+
+        Ok(user_id)
+    }
+
+    pub async fn get_username(&self, user_id: u32) -> Result<String> {
+        let s: String = sqlx::query_scalar(r#"SELECT username FROM users where user_id=(?);"#)
+            .bind(user_id)
+            .fetch_one(&self.db)
+            .await
+            .map_err(|_| Error::UserIdNotFound)?;
+        Ok(s)
     }
 }

@@ -1,0 +1,13 @@
+<div id="modal" _="on closeModal add .closing then wait for animationend then remove me">
+	<div class="modal-underlay" _="on click trigger closeModal"></div>
+	<div class="modal-content">
+		<span class="modal-close" _="on click trigger closeModal">×</span>
+		<div>
+			<h2>User Profile</h2>
+			<p>Username: {{username}}</p>
+			<p>User ID: {{user_id}}</p>
+		</div>
+		<br>
+		<br>
+	</div>
+</div>

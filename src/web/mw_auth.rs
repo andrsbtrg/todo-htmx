@@ -37,7 +37,13 @@ pub async fn mw_async_resolver<B>(
         .ok_or(Error::AuthFailNoAuthToken)
         .and_then(parse_token)
     {
-        Ok((user_id, _exp, _sign)) => Ok(Context::new(user_id)),
+        Ok((user_id, _exp, _sign)) => {
+            // get user_id
+            match _mc.get_username(user_id).await {
+                Ok(username) => Ok(Context::new(user_id, &username)),
+                Err(e) => Err(e),
+            }
+        }
         Err(e) => Err(e),
     };
 

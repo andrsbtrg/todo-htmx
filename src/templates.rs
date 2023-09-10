@@ -4,13 +4,14 @@ use crate::models::Ticket;
 
 #[derive(Template)]
 #[template(path = "start.html")]
-pub struct StartTemplate {
-    pub username: String,
+pub struct StartTemplate<'a> {
+    pub username: &'a str,
 }
 
 #[derive(Template)]
 #[template(path = "tickets.html")]
 pub struct TicketsTemplate {
+    pub username: String,
     pub tickets: Vec<Ticket>,
 }
 
@@ -18,4 +19,11 @@ pub struct TicketsTemplate {
 #[template(path = "ticket.html")]
 pub struct TicketTemplate {
     pub ticket: Ticket,
+}
+
+#[derive(Template)]
+#[template(path = "profile.html")]
+pub struct ProfileTemplate {
+    pub username: String,
+    pub user_id: u32,
 }

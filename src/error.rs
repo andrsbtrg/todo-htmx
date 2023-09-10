@@ -19,6 +19,9 @@ pub enum Error {
     EmptyTicket,
     AuthFailTokenWrongFormat,
     AuthFailCtxNotInRequestExt,
+    UserCreateFail,
+    /// The provided user id doesnt exist
+    UserIdNotFound,
 }
 
 impl IntoResponse for Error {
