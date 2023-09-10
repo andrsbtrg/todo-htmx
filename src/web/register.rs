@@ -3,12 +3,19 @@ use crate::{
     web, Result,
 };
 use askama_axum::IntoResponse;
-use axum::{http::HeaderMap, routing::post, Extension, Form, Router};
+use axum::{
+    extract::{Path, Query},
+    http::HeaderMap,
+    routing::{get, post},
+    Extension, Form, Router,
+};
 use serde::Deserialize;
 use tower_cookies::{Cookie, Cookies};
 
 pub fn routes() -> Router {
-    Router::new().route("/api/register", post(register_new))
+    Router::new()
+        .route("/api/register", post(register_new))
+        .route("/api/register", get(check_username))
 }
 
 async fn register_new(
@@ -39,6 +46,24 @@ async fn register_new(
     headers.insert("HX-Redirect", "/".parse().unwrap());
 
     Ok(headers)
+}
+
+#[derive(Deserialize)]
+struct UserValidationPayload {
+    username: String,
+}
+async fn check_username(
+    Extension(mc): Extension<ModelController>,
+    Query(payload): Query<UserValidationPayload>,
+) -> impl IntoResponse {
+    println!("->> {:<12} - validate-username", "HANDLER");
+    if payload.username.is_empty() {
+        return "".into_response();
+    }
+    match mc.username_exists(&payload.username).await {
+        true => "Username already taken".into_response(),
+        false => "".into_response(),
+    }
 }
 
 #[derive(Debug, Deserialize)]

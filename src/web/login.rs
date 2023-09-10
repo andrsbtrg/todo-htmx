@@ -21,12 +21,13 @@ async fn api_login(
             // FIXME: Implement real cookies
             if pwhash::bcrypt::verify(payload.password, &pwd) {
                 let user_id: u32 = mc.get_user_id(&payload.username).await.unwrap();
+                dbg!(user_id);
                 let cookie = Cookie::build(web::AUTH_TOKEN, format!("user-{user_id}.exp.sign"))
                     .path("/")
                     .finish();
                 cookies.add(cookie);
 
-                headers.insert("HX-Redirect", "/".parse().unwrap());
+                headers.insert("HX-Redirect", "/home".parse().unwrap());
             }
         }
         None => return Err(Error::LoginFail),

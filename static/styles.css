@@ -47,6 +47,13 @@ input:invalid {
   border: 2px dashed red;
 }
 
+.error {
+    color: red;
+    max-width:inherit;
+    display: inherit;
+    font-size: small;
+}
+
 .small-text {
     font-size: 10px;
 }

@@ -117,7 +117,10 @@ impl ModelController {
         .bind(&payload.hashed_password)
         .fetch_one(&self.db)
         .await
-        .map_err(|_| Error::UserCreateFail)?;
+        .map_err(|err| {
+            // println!("{:?}", err);
+            Error::UserCreateFail
+        })?;
 
         Ok(user_id)
     }
@@ -147,5 +150,16 @@ impl ModelController {
             .await
             .map_err(|_| Error::UserIdNotFound)?;
         Ok(s)
+    }
+
+    pub async fn username_exists(&self, username: &str) -> bool {
+        match sqlx::query_scalar(r#"SELECT EXISTS(SELECT 1 FROM users WHERE username=(?));"#)
+            .bind(username)
+            .fetch_one(&self.db)
+            .await
+        {
+            Ok(exists) => exists,
+            Err(_) => false,
+        }
     }
 }
