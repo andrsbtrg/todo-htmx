@@ -31,13 +31,6 @@ async fn api_login(
         }
         None => return Err(Error::LoginFail),
     }
-    // if payload.username != "dev" || payload.password != "password" {
-    //     return Err(Error::LoginFail);
-    // }
-
-    // let user_header = templates::HeaderUserTemplate {
-    //     name: payload.username,
-    // }
 
     Ok(headers)
 }

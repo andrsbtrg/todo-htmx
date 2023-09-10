@@ -99,7 +99,7 @@ impl ModelController {
             .execute(&self.db)
             .await
         {
-            Ok(res) => {
+            Ok(_) => {
                 return Ok(());
             }
             Err(e) => {
@@ -138,5 +138,14 @@ impl ModelController {
             .map_err(|_| Error::UserCreateFail)?;
 
         Ok(user_id)
+    }
+
+    pub async fn get_username(&self, user_id: u32) -> Result<String> {
+        let s: String = sqlx::query_scalar(r#"SELECT username FROM users where user_id=(?);"#)
+            .bind(user_id)
+            .fetch_one(&self.db)
+            .await
+            .map_err(|_| Error::UserIdNotFound)?;
+        Ok(s)
     }
 }

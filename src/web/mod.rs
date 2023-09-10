@@ -1,9 +1,10 @@
-pub mod home;
+mod home;
 pub mod login;
 pub mod logout;
 pub mod mw_auth;
 pub mod profile;
 pub mod register;
+pub mod root;
 pub mod routes_static;
 pub mod tickets;
 
@@ -24,6 +25,7 @@ pub fn app(pool: SqlitePool) -> Router {
     let routes_api = tickets::routes().route_layer(middleware::from_fn(mw_auth::mw_require_auth));
 
     Router::new()
+        .merge(root::routes())
         .merge(home::routes())
         .merge(login::routes())
         .merge(logout::routes())

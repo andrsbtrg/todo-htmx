@@ -23,4 +23,7 @@ pub struct TicketTemplate {
 
 #[derive(Template)]
 #[template(path = "profile.html")]
-pub struct ProfileTemplate {}
+pub struct ProfileTemplate {
+    pub username: String,
+    pub user_id: u32,
+}

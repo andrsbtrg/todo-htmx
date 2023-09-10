@@ -5,7 +5,7 @@ use axum::routing::get;
 use axum::Router;
 
 pub fn routes() -> Router {
-    Router::new().route("/", get(home))
+    Router::new().route("/home", get(home))
 }
 
 async fn home(ctx: Option<Context>) -> axum::response::Response {

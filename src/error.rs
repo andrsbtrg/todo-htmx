@@ -20,6 +20,8 @@ pub enum Error {
     AuthFailTokenWrongFormat,
     AuthFailCtxNotInRequestExt,
     UserCreateFail,
+    /// The provided user id doesnt exist
+    UserIdNotFound,
 }
 
 impl IntoResponse for Error {
