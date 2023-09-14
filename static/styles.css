@@ -54,6 +54,13 @@ input:invalid {
     font-size: small;
 }
 
+.success {
+    color: green;
+    max-width:inherit;
+    display: inherit;
+    font-size: small;
+}
+
 .small-text {
     font-size: 10px;
 }

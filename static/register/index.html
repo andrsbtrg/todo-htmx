@@ -16,8 +16,9 @@
 			<form>
 				<div class="form-group">
 					<label for="username">Username </label>
-					<input hx-get="/api/register" hx-target="next .error" hx-trigger="change, keyup delay:400ms"
-						type="text" name="username" id="username" required class="form-input" />
+					<input hx-get="/api/register" hx-target="next .error"
+						hx-trigger="keydown[key=='Tab'] changed delay:500ms" type="text" pattern="^[a-zA-Z1-9].*"
+						name="username" id="username" required class="form-input" />
 					<span class="error"></span>
 				</div>
 				<div class="form-group">
@@ -26,7 +27,7 @@
 				</div>
 				<div class="form-group">
 					<input type="checkbox" name="terms" id="terms" required class="form-input" />
-					<label for="password">I accept the terms and conditions</label>
+					<label for="checkbox">I accept the terms and conditions</label>
 				</div>
 				<div>
 					<button hx-post="/api/register" class="create-button"> Register

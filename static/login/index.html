@@ -16,14 +16,18 @@
 			<form>
 				<div class="form-group">
 					<label for="username">Username </label>
-					<input class="form-input" type="text" name="username" id="username" required />
+					<input hx-get="/api/login" hx-target="next .success"
+						hx-trigger="keydown[key=='Tab'] changed delay:200ms" type="text" pattern="^[a-zA-Z1-9].*"
+						class="form-input" type="text" name="username" id="username" required />
+					<span class="success"></span>
 				</div>
 				<div class="form-group">
 					<label for="password">Password </label>
 					<input type="password" name="password" id="password" required class="form-input" />
+					<span class="error"></span>
 				</div>
 				<div>
-					<button hx-post="/api/login" class="create-button" hx-swap="none"> Login
+					<button hx-post="/api/login" class="create-button" hx-target="previous .error"> Login
 					</button>
 				</div>
 			</form>

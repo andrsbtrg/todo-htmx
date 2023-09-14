@@ -118,7 +118,7 @@ impl ModelController {
         .fetch_one(&self.db)
         .await
         .map_err(|err| {
-            // println!("{:?}", err);
+            eprintln!("Error creating user: {:?}", err);
             Error::UserCreateFail
         })?;
 

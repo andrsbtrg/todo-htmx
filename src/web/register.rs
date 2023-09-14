@@ -43,14 +43,14 @@ async fn register_new(
     cookies.add(cookie);
 
     let mut headers = HeaderMap::new();
-    headers.insert("HX-Redirect", "/".parse().unwrap());
+    headers.insert("HX-Redirect", "/home".parse().unwrap());
 
     Ok(headers)
 }
 
 #[derive(Deserialize)]
-struct UserValidationPayload {
-    username: String,
+pub struct UserValidationPayload {
+    pub username: String,
 }
 async fn check_username(
     Extension(mc): Extension<ModelController>,
