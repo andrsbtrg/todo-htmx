@@ -1,9 +1,26 @@
+:root {
+  --primary: #F9FAFB;
+  --secondary: #FCFCFD;
+  --text: #000;
+}
+
+.dark {
+  --primary: #16181D;
+  --secondary: #1A1D23;
+  --text: #eee;
+}
+
 body {
-    color: #eee;
-    background: #202020;
+    color: var(--text);
+    background: var(--primary);
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; */
+    --font-fallback: -apple-system, 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    --font-display: 'Inter', var(--font-fallback);
+    --font-mono: 'Fira Code', monospace;
+    --font-numeric: 'Space Grotesk', var(--font-fallback);
+    font: 112.5%/1.45 var(--font-display);
 }
 
 body a {
@@ -11,8 +28,8 @@ body a {
 }
 /* Apply a background color and styles for the header */
 .header {
-    background-color: #333; /* You can change the color to your preference */
-    color: #fff; /* Text color for the header */
+    background-color: var(--primary); /* You can change the color to your preference */
+    color: var(--text); /* Text color for the header */
     padding: 10px; /* Adjust the padding as needed */
     position: fixed; /* Make the header fixed at the top */
     top: 0; /* Position it at the top of the viewport */
@@ -33,13 +50,13 @@ body a {
 
 .header-left a {
     text-decoration: none;
-    color: #fff; /* Link color */
+    color: var(--text); /* Link color */
 }
 
 /* Style the links within the header-right */
 .header-right a {
     text-decoration: none;
-    color: #fff; /* Link color */
+    color: var(--text); /* Link color */
     margin-left: 10px; /* Add spacing between links */
 }
 
@@ -79,12 +96,13 @@ input:invalid {
 }
 
 .card {
-    background-color: #222;
-    color: #fff;
-    border-radius: 4px;
+    background-color: var(--secondary);
+    color: var(--text);
+    border-radius: 16px;
     margin: 10px;
-    padding: 0;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+    padding: 5px;
+    border: 0.5px solid var(--text);
+    /* box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3); */
     min-width: 350px;
 }
 
@@ -94,14 +112,14 @@ input:invalid {
     margin-bottom: 10px;
     text-align: center;
     padding: 10px;
-    background-color: #333;
+    background-color: var(--secondary);
 }
 
 .card-body {
     font-size: 16px;
-    background-color: #444;
+    background-color: var(--secondary);
     padding: 10px;
-    border-top: 1px solid white;
+    /* border-top: 1px solid white; */
 }
 
 .delete-button {
@@ -135,7 +153,20 @@ input:invalid {
     border: 1px solid #ddd;
     border-radius: 4px;
 }
+.dark-button {
+    background-color: var(--primary);
+    color: var(--text);
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 16px;
+    /* transition: background-color 0.3s ease; */
+}
 
+.dark-button:hover {
+    background-color: var(--secondary);
+}
 .create-button {
     background-color: #008cba;
     color: white;
@@ -199,10 +230,10 @@ input:invalid {
 	max-width:600px;
 
 	/* Display properties for visible dialog*/
-	border:solid 1px #999;
+	border:solid 1px var(--text);
 	border-radius:8px;
 	box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.3);
-	background-color: #202020;
+	background-color: var(--primary);
 	padding:20px;
 
 	/* Animate when opening */
