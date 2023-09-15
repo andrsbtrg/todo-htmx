@@ -6,6 +6,26 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="styles.css" rel="stylesheet" type="text/css">
+	<script>
+	document.addEventListener('DOMContentLoaded', function() { 
+		try {
+        var mode = localStorage.getItem('mode');
+		var supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+		if (!mode && supportDarkMode) {
+			localStorage.setItem('mode', 'dark');
+			document.body.classList.add('dark')
+			return;
+		}
+		if (mode === 'light') {
+			document.body.classList.remove('dark');
+		} else if (mode === 'dark') {
+			document.body.classList.add(mode);
+		}
+      } catch (e) {
+		  console.log(e)
+	  }
+	});
+	</script>
 	<script src="https://unpkg.com/htmx.org@1.9.4"></script>
 	<script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
 </head>
@@ -13,6 +33,16 @@
 <header hx-boost="true">
 	<div id="user-header" class="header">
 		{% block header %}<p>Placeholder header</p>{% endblock %}
+
+		<div class="header-right">
+			<button class="dark-button" _="on click
+  if localStorage.mode is 'dark'
+    set localStorage.mode to 'light'
+    remove .dark from <body/>
+  else
+    set localStorage.mode to 'dark'
+    add .dark to <body/>">🌙</button>
+		</div>
 	</div>
 </header>
 
