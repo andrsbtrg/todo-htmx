@@ -2,7 +2,7 @@ use crate::{models::ModelController, web, Error, Result};
 use askama_axum::IntoResponse;
 use axum::{
     extract::Query,
-    http::{response, HeaderMap, Response},
+    http::HeaderMap,
     routing::{get, post},
     Extension, Form, Router,
 };

@@ -1,2 +1,3 @@
-application_port: 3000
+application_addr: "127.0.0.1"
+application_port: 8000
 database_name: "db"

@@ -4,7 +4,7 @@ use crate::{
 };
 use askama_axum::IntoResponse;
 use axum::{
-    extract::{Path, Query},
+    extract::Query,
     http::HeaderMap,
     routing::{get, post},
     Extension, Form, Router,

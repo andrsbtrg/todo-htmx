@@ -1,21 +1,25 @@
 use axum::{
     extract::Path,
-    routing::{delete, get, post},
+    routing::{delete, get, post, put},
     Extension, Form, Router,
 };
 use serde::Deserialize;
 
 use crate::{
     ctx::Context,
-    models::{ModelController, TicketCreate},
-    templates::{TicketTemplate, TicketsTemplate},
+    models::{ModelController, Ticket, TicketFC},
+    templates::{TicketCreate, TicketTemplate, TicketsTable, TicketsTemplate},
 };
 
 pub fn routes() -> Router {
     Router::new()
         .route("/tickets", get(get_tickets))
+        .route("/tickets/new", get(ticket_creator))
         .route("/tickets", post(create_ticket))
         .route("/tickets/:id", delete(delete_ticket))
+        .route("/tickets/:id/doing", put(update_ticket_doing))
+        .route("/tickets/:id/done", put(update_ticket_done))
+        .route("/tickets/:id/todo", put(update_ticket_todo))
 }
 
 async fn get_tickets(Extension(mc): Extension<ModelController>, ctx: Context) -> TicketsTemplate {
@@ -23,10 +27,29 @@ async fn get_tickets(Extension(mc): Extension<ModelController>, ctx: Context) ->
     let tickets = mc.get_tickets(&ctx).await.unwrap_or_default();
     let username = ctx.username();
 
-    TicketsTemplate {
-        tickets,
-        username: username.to_string(),
+    let mut tickets_todo: Vec<Ticket> = Vec::new();
+    let mut tickets_doing: Vec<Ticket> = Vec::new();
+    let mut tickets_done: Vec<Ticket> = Vec::new();
+
+    for ticket in tickets {
+        match ticket.status.as_str() {
+            "to-do" => tickets_todo.push(ticket.to_owned()),
+            "doing" => tickets_doing.push(ticket.to_owned()),
+            "done" => tickets_done.push(ticket.to_owned()),
+            _ => tickets_todo.push(ticket.to_owned()),
+        }
     }
+
+    TicketsTemplate {
+        username: username.to_string(),
+        tickets_todo,
+        tickets_doing,
+        tickets_done,
+    }
+}
+
+async fn ticket_creator(_ctx: Context) -> TicketCreate {
+    TicketCreate {}
 }
 
 async fn create_ticket(
@@ -36,7 +59,7 @@ async fn create_ticket(
 ) -> TicketTemplate {
     println!("->> {:<12} - create_tickets", "HANDLER");
     if payload.title.is_empty() {}
-    let ticket_fc = TicketCreate::new(payload.title, payload.description);
+    let ticket_fc = TicketFC::new(payload.title, payload.description);
 
     let ticket = mc.create_ticket(ctx, ticket_fc).await.unwrap();
 
@@ -50,6 +73,61 @@ async fn delete_ticket(
 ) {
     println!("->> {:<12} - delete_ticket", "HANDLER");
     mc.delete_ticket(ctx, id).await.unwrap();
+}
+
+async fn update_ticket_doing(
+    Extension(mc): Extension<ModelController>,
+    ctx: Context,
+    Path(id): Path<i32>,
+) -> TicketsTable {
+    println!("->> {:<12} - update_ticket", "HANDLER");
+    let tickets = mc.update_ticket(&ctx, id, "doing").await.unwrap();
+
+    dbg!(&tickets);
+
+    render_ticket_table(tickets)
+}
+async fn update_ticket_done(
+    Extension(mc): Extension<ModelController>,
+    ctx: Context,
+    Path(id): Path<i32>,
+) -> TicketsTable {
+    println!("->> {:<12} - update_ticket", "HANDLER");
+    let tickets = mc.update_ticket(&ctx, id, "done").await.unwrap();
+
+    render_ticket_table(tickets)
+}
+
+async fn update_ticket_todo(
+    Extension(mc): Extension<ModelController>,
+    ctx: Context,
+    Path(id): Path<i32>,
+) -> TicketsTable {
+    println!("->> {:<12} - update_ticket", "HANDLER");
+    let tickets = mc.update_ticket(&ctx, id, "to-do").await.unwrap();
+
+    render_ticket_table(tickets)
+}
+
+fn render_ticket_table(tickets: Vec<Ticket>) -> TicketsTable {
+    let mut tickets_todo: Vec<Ticket> = Vec::new();
+    let mut tickets_doing: Vec<Ticket> = Vec::new();
+    let mut tickets_done: Vec<Ticket> = Vec::new();
+
+    for ticket in tickets {
+        match ticket.status.as_str() {
+            "to-do" => tickets_todo.push(ticket.to_owned()),
+            "doing" => tickets_doing.push(ticket.to_owned()),
+            "done" => tickets_done.push(ticket.to_owned()),
+            _ => tickets_todo.push(ticket.to_owned()),
+        }
+    }
+
+    TicketsTable {
+        tickets_todo,
+        tickets_doing,
+        tickets_done,
+    }
 }
 
 #[derive(Debug, Deserialize)]

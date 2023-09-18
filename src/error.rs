@@ -22,6 +22,9 @@ pub enum Error {
     UserCreateFail,
     /// The provided user id doesnt exist
     UserIdNotFound,
+    /// Change ticket state failed
+    UpdateTicketError,
+    DatabaseError,
 }
 
 impl IntoResponse for Error {

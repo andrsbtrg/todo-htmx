@@ -5,6 +5,7 @@ use sqlx::{migrate::MigrateDatabase, Sqlite};
 pub struct Settings {
     pub application_port: u16,
     pub database_name: String,
+    pub application_addr: String,
 }
 
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {

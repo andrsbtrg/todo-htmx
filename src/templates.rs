@@ -12,7 +12,9 @@ pub struct StartTemplate<'a> {
 #[template(path = "tickets.html")]
 pub struct TicketsTemplate {
     pub username: String,
-    pub tickets: Vec<Ticket>,
+    pub tickets_todo: Vec<Ticket>,
+    pub tickets_doing: Vec<Ticket>,
+    pub tickets_done: Vec<Ticket>,
 }
 
 #[derive(Template)]
@@ -20,6 +22,18 @@ pub struct TicketsTemplate {
 pub struct TicketTemplate {
     pub ticket: Ticket,
 }
+
+#[derive(Template)]
+#[template(path = "tickets_table.html")]
+pub struct TicketsTable {
+    pub tickets_todo: Vec<Ticket>,
+    pub tickets_doing: Vec<Ticket>,
+    pub tickets_done: Vec<Ticket>,
+}
+
+#[derive(Template)]
+#[template(path = "ticket_create.html")]
+pub struct TicketCreate {}
 
 #[derive(Template)]
 #[template(path = "profile.html")]

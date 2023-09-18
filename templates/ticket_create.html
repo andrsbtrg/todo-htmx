@@ -1,0 +1,13 @@
+<form class="fade-me-out" hx-post="/tickets" hx-swap="outerHTML swap:0.5s">
+	<div class="card">
+		<div class="card-header">
+			<label for="title">Title </label>
+			<input type="text" name="title" id="title" class="form-input" required />
+		</div>
+		<div class="card-body">
+			<label for="description">Description </label>
+			<input type="text" name="description" id="description" class="form-input" />
+		</div>
+		<button class="create-button">Create</button>
+	</div>
+</form>
