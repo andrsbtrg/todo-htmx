@@ -83,8 +83,6 @@ async fn update_ticket_doing(
     println!("->> {:<12} - update_ticket", "HANDLER");
     let tickets = mc.update_ticket(&ctx, id, "doing").await.unwrap();
 
-    dbg!(&tickets);
-
     render_ticket_table(tickets)
 }
 async fn update_ticket_done(
