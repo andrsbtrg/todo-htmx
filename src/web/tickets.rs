@@ -108,16 +108,16 @@ async fn update_ticket_todo(
 }
 
 fn render_ticket_table(tickets: Vec<Ticket>) -> TicketsTable {
-    let mut tickets_todo: Vec<Ticket> = Vec::new();
-    let mut tickets_doing: Vec<Ticket> = Vec::new();
-    let mut tickets_done: Vec<Ticket> = Vec::new();
+    let mut tickets_todo: Vec<Ticket> = Vec::with_capacity(tickets.len());
+    let mut tickets_doing: Vec<Ticket> = Vec::with_capacity(tickets.len());
+    let mut tickets_done: Vec<Ticket> = Vec::with_capacity(tickets.len());
 
-    for ticket in tickets {
+    for ticket in tickets.into_iter() {
         match ticket.status.as_str() {
-            "to-do" => tickets_todo.push(ticket.to_owned()),
-            "doing" => tickets_doing.push(ticket.to_owned()),
-            "done" => tickets_done.push(ticket.to_owned()),
-            _ => tickets_todo.push(ticket.to_owned()),
+            "to-do" => tickets_todo.push(ticket),
+            "doing" => tickets_doing.push(ticket),
+            "done" => tickets_done.push(ticket),
+            _ => tickets_todo.push(ticket),
         }
     }
 
