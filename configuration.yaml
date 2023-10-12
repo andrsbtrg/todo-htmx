@@ -1,3 +1,7 @@
 application_addr: "0.0.0.0"
 application_port: 8000
 database_name: "db"
+port: 5432
+username: "postgres"
+password: "password"
+host: "127.0.0.1"

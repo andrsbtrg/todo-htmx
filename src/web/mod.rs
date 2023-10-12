@@ -10,7 +10,7 @@ pub mod tickets;
 
 use askama_axum::{IntoResponse, Response};
 use axum::{middleware, Extension, Json, Router};
-use sqlx::SqlitePool;
+use sqlx::PgPool;
 use tower_cookies::CookieManagerLayer;
 
 use crate::{models::ModelController, Error};
@@ -19,7 +19,7 @@ use self::mw_auth::mw_async_resolver;
 
 pub const AUTH_TOKEN: &str = "auth-token";
 
-pub fn app(pool: SqlitePool) -> Router {
+pub fn app(pool: PgPool) -> Router {
     let model_controller = ModelController::new(pool).unwrap();
 
     let routes_api = tickets::routes().route_layer(middleware::from_fn(mw_auth::mw_require_auth));

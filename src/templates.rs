@@ -39,5 +39,5 @@ pub struct TicketCreate {}
 #[template(path = "profile.html")]
 pub struct ProfileTemplate {
     pub username: String,
-    pub user_id: u32,
+    pub user_id: i32,
 }

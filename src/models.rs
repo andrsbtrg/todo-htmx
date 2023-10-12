@@ -1,14 +1,14 @@
 use crate::{ctx::Context, Error, Result};
 
 use serde::{Deserialize, Serialize};
-use sqlx::{FromRow, Sqlite, SqlitePool};
+use sqlx::{FromRow, PgPool, Postgres};
 use std::sync::Mutex;
 
 /// Represents the Ticket that is visualized and sent to the client
-#[derive(Serialize, Clone, Debug, FromRow)]
+#[derive(Serialize, Clone, Debug, sqlx::FromRow)]
 pub struct Ticket {
-    pub id: u32,
-    pub creator_id: u32,
+    pub id: i32,
+    pub creator_id: i32,
     pub creator_name: String,
     pub title: String,
     pub status: String,
@@ -18,8 +18,8 @@ pub struct Ticket {
 /// Represents a Ticket Stored in DB
 #[derive(Serialize, Clone, Debug, FromRow)]
 pub struct TicketC {
-    pub id: u32,
-    pub creator_id: u32,
+    pub id: i32,
+    pub creator_id: i32,
     pub title: String,
     pub status: String,
     pub description: String,
@@ -62,11 +62,11 @@ pub struct UserCreate {
 /// model controller
 #[derive(Clone)]
 pub struct ModelController {
-    db: std::sync::Arc<Mutex<SqlitePool>>,
+    db: std::sync::Arc<Mutex<PgPool>>,
 }
 
 impl ModelController {
-    pub fn new(db: SqlitePool) -> Result<Self> {
+    pub fn new(db: PgPool) -> Result<Self> {
         Ok(Self {
             db: std::sync::Arc::new(Mutex::new(db)),
         })
@@ -76,8 +76,8 @@ impl ModelController {
         let creator_id = ctx.user_id();
 
         let pool = self.db.lock().unwrap().to_owned();
-        match sqlx::query_as::<Sqlite, TicketC>(
-            r#"INSERT INTO tickets (title, status, description, creator_id) VALUES (?,?,?,?) RETURNING *;"#,
+        match sqlx::query_as::<Postgres, TicketC>(
+            r#"INSERT INTO tickets (title, status, description, creator_id) VALUES ($1,$2,$3,$4) RETURNING *;"#,
         )
         .bind(ticket_fc.title)
         .bind(ticket_fc.status)
@@ -109,7 +109,7 @@ impl ModelController {
         let _creator_id = ctx.user_id();
 
         let pool = self.db.lock().unwrap().to_owned();
-        match sqlx::query_as::<_, Ticket>(r#"
+        match sqlx::query_as::<Postgres, Ticket>(r#"
 SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.creator_id, users.username AS creator_name
 FROM tickets
 INNER JOIN users ON tickets.creator_id = users.user_id;
@@ -128,7 +128,7 @@ INNER JOIN users ON tickets.creator_id = users.user_id;
         let _creator_id = ctx.user_id();
 
         let username = ctx.username();
-        match sqlx::query_as::<_, TicketC>("SELECT * FROM tickets WHERE creator_id=(?)")
+        match sqlx::query_as::<Postgres, TicketC>("SELECT * FROM tickets WHERE creator_id=($1)")
             .bind(_creator_id)
             .fetch_all(&pool)
             .await
@@ -144,7 +144,8 @@ INNER JOIN users ON tickets.creator_id = users.user_id;
     pub async fn delete_ticket(&self, ctx: Context, id: i32) -> Result<()> {
         let pool = self.db.lock().unwrap().to_owned();
         let _creator_id = ctx.user_id();
-        match sqlx::query!("DELETE from tickets WHERE id=(?)", id)
+        match sqlx::query("DELETE from tickets WHERE id = $1")
+            .bind(id)
             .execute(&pool)
             .await
         {
@@ -158,10 +159,10 @@ INNER JOIN users ON tickets.creator_id = users.user_id;
         }
     }
 
-    pub async fn register_new(&self, payload: UserCreate) -> Result<u32> {
+    pub async fn register_new(&self, payload: UserCreate) -> Result<i32> {
         let pool = self.db.lock().unwrap().to_owned();
-        let user_id: u32 = sqlx::query_scalar(
-            r#"INSERT INTO users (username, password) VALUES (?, ?) RETURNING user_id ;"#,
+        let user_id: i32 = sqlx::query_scalar(
+            r#"INSERT INTO users (username, password) VALUES ($1, $2) RETURNING user_id ;"#,
         )
         .bind(&payload.username)
         .bind(&payload.hashed_password)
@@ -177,16 +178,16 @@ INNER JOIN users ON tickets.creator_id = users.user_id;
 
     pub async fn get_pwd(&self, username: &str) -> Option<String> {
         let pool = self.db.lock().unwrap().to_owned();
-        sqlx::query_scalar(r#"SELECT password FROM users WHERE username=(?);"#)
+        sqlx::query_scalar(r#"SELECT password FROM users WHERE username=($1);"#)
             .bind(&username)
             .fetch_optional(&pool)
             .await
             .unwrap()
     }
 
-    pub async fn get_user_id(&self, username: &str) -> Result<u32> {
+    pub async fn get_user_id(&self, username: &str) -> Result<i32> {
         let pool = self.db.lock().unwrap().to_owned();
-        let user_id: u32 = sqlx::query_scalar(r#"SELECT user_id FROM users WHERE username=(?);"#)
+        let user_id: i32 = sqlx::query_scalar(r#"SELECT user_id FROM users WHERE username=($1);"#)
             .bind(username)
             .fetch_one(&pool)
             .await
@@ -195,9 +196,9 @@ INNER JOIN users ON tickets.creator_id = users.user_id;
         Ok(user_id)
     }
 
-    pub async fn get_username(&self, user_id: u32) -> Result<String> {
+    pub async fn get_username(&self, user_id: i32) -> Result<String> {
         let pool = self.db.lock().unwrap().to_owned();
-        let s: String = sqlx::query_scalar(r#"SELECT username FROM users where user_id=(?);"#)
+        let s: String = sqlx::query_scalar(r#"SELECT username FROM users where user_id=($1);"#)
             .bind(user_id)
             .fetch_one(&pool)
             .await
@@ -207,7 +208,7 @@ INNER JOIN users ON tickets.creator_id = users.user_id;
 
     pub async fn username_exists(&self, username: &str) -> bool {
         let pool = self.db.lock().unwrap().to_owned();
-        match sqlx::query_scalar(r#"SELECT EXISTS(SELECT 1 FROM users WHERE username=(?));"#)
+        match sqlx::query_scalar(r#"SELECT EXISTS(SELECT 1 FROM users WHERE username=($1));"#)
             .bind(username)
             .fetch_one(&pool)
             .await
@@ -219,28 +220,46 @@ INNER JOIN users ON tickets.creator_id = users.user_id;
 
     pub async fn update_ticket(&self, _ctx: &Context, id: i32, arg: &str) -> Result<Vec<Ticket>> {
         let pool = self.db.lock().unwrap().to_owned();
-        // We need to reuse the same pool, not clone it so both trx can happen
+
         let transaction = pool
             .begin()
             .await
             .map_err(|_| Error::DatabaseError)
             .unwrap();
-
-        match sqlx::query_as::<_, Ticket>(
-            r#"
-UPDATE tickets SET status=(?) WHERE id=(?);
-SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.creator_id, users.username AS creator_name
-FROM tickets
-INNER JOIN users ON tickets.creator_id = users.user_id;
-            "#,
-        )
-        .bind(arg)
-        .bind(id)
-        .fetch_all(&pool)
-        .await
+        // Perform the UPDATE operation
+        match sqlx::query("UPDATE tickets SET status = $1 WHERE id = $2")
+            .bind(arg)
+            .bind(id)
+            .execute(&pool)
+            .await
         {
-            Ok(_tickets) => Ok(_tickets),
+            Ok(_) => {
+                // If the UPDATE is successful, perform the SELECT operation
+                match sqlx::query_as::<Postgres, Ticket>(
+                r#"
+                SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.creator_id, users.username AS creator_name
+                FROM tickets
+                INNER JOIN users ON tickets.creator_id = users.user_id
+                WHERE tickets.id = $1;
+                "#,
+            )
+            .bind(id)
+            .fetch_all(&pool)
+            .await
+            {
+                Ok(tickets) => {
+                    // Commit the transaction
+                    Ok(tickets)
+                }
+                Err(e) => {
+                    // Rollback the transaction on SELECT error
+                    eprintln!("{:?}", e);
+                    Err(Error::UpdateTicketError)
+                }
+            }
+            }
             Err(e) => {
+                // Rollback the transaction on UPDATE error
                 let _ = transaction
                     .rollback()
                     .await

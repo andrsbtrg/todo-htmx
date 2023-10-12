@@ -39,8 +39,8 @@ pub async fn mw_async_resolver<B>(
     {
         Ok((user_id, _exp, _sign)) => {
             // get user_id
-            match _mc.get_username(user_id).await {
-                Ok(username) => Ok(Context::new(user_id, &username)),
+            match _mc.get_username(user_id.try_into().unwrap()).await {
+                Ok(username) => Ok(Context::new(user_id.try_into().unwrap(), &username)),
                 Err(e) => Err(e),
             }
         }

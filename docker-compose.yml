@@ -1,0 +1,14 @@
+version: '3'
+services:
+  api:
+    image: andrsbtrg/learn-htmx
+    environment:
+      DATABASE_URL: "sqlite://db.db"
+      application_addr: "0.0.0.0"
+      application_port: 8000
+      database_name: "db"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"

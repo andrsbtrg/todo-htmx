@@ -27,7 +27,7 @@ async fn api_login(
         Some(pwd) => {
             // FIXME: Implement real cookies
             if pwhash::bcrypt::verify(payload.password, &pwd) {
-                let user_id: u32 = mc.get_user_id(&payload.username).await.unwrap();
+                let user_id: i32 = mc.get_user_id(&payload.username).await.unwrap();
                 let cookie = Cookie::build(web::AUTH_TOKEN, format!("user-{user_id}.exp.sign"))
                     .path("/")
                     .finish();
