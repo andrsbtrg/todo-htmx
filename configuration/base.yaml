@@ -1,8 +1,8 @@
-addr: "127.0.0.1"
-port: 8000
+application:
+  port: 8000
 database:
   db_name: "db"
   port: 5432
   username: "postgres"
   password: "password"
-  host: "127.0.0.1"
+  host: "localhost"

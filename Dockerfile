@@ -10,5 +10,9 @@ RUN cargo build --release --target x86_64-unknown-linux-musl
 
 FROM scratch
 COPY --from=builder /learn-htmx/target/x86_64-unknown-linux-musl/release/learn-htmx /learn-htmx
+COPY --from=builder /learn-htmx/configuration/ /configuration/
+COPY --from=builder /learn-htmx/templates /templates
+COPY --from=builder /learn-htmx/static /static
+ENV APP_ENVIRONMENT production
 ENTRYPOINT ["/learn-htmx"]
 EXPOSE 8000

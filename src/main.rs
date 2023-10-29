@@ -13,14 +13,13 @@ use std::net::{IpAddr, SocketAddr};
 async fn main() {
     let config = configuration::get_configuration().expect("Unable to load configurationfile.");
 
-    let ip: IpAddr = config.addr.parse().unwrap();
-    let socket = SocketAddr::new(ip, config.port);
+    let ip: IpAddr = config.application.host.parse().unwrap();
+    let socket = SocketAddr::new(ip, config.application.port);
 
     let db_url = config.postgres_connection_string();
 
-    let connection_pool = PgPool::connect(&db_url)
-        .await
-        .expect("Failed to connect to Postgres.");
+    let connection_pool =
+        PgPool::connect_lazy(&db_url).expect("Failed to create Postgres connection pool.");
 
     let app = web::app(connection_pool);
     println!("->> {:<12} - LISTENING on http://{}", "RUNNING", socket);
