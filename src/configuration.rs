@@ -71,10 +71,11 @@ impl TryFrom<String> for Environment {
 impl Settings {
     pub fn postgres_connection_string(&self) -> String {
         format!(
-            "postgres://{}:{}@{}/{}",
+            "postgres://{}:{}@{}:{}/{}",
             self.database.username,
             self.database.password,
             self.database.host,
+            self.database.port,
             self.database.db_name
         )
     }
