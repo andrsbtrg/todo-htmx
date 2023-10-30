@@ -18,8 +18,6 @@ async fn main() {
 
     let db_url = config.postgres_connection_string();
 
-    println!("database url: {}", db_url);
-
     let connection_pool =
         PgPool::connect_lazy(&db_url).expect("Failed to create Postgres connection pool.");
 
