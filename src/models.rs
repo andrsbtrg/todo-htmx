@@ -237,13 +237,11 @@ INNER JOIN users ON tickets.creator_id = users.user_id;
                 // If the UPDATE is successful, perform the SELECT operation
                 match sqlx::query_as::<Postgres, Ticket>(
                 r#"
-                SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.creator_id, users.username AS creator_name
-                FROM tickets
-                INNER JOIN users ON tickets.creator_id = users.user_id
-                WHERE tickets.id = $1;
+    SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.creator_id, users.username AS creator_name
+    FROM tickets
+    INNER JOIN users ON tickets.creator_id = users.user_id;
                 "#,
             )
-            .bind(id)
             .fetch_all(&pool)
             .await
             {
