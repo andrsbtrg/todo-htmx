@@ -13,8 +13,15 @@
 
 {% block content %}
 <h1>My Tickets</h1>
-
-<div id="ticket-table" class="responsive-three-column-grid">
-		{% include "tickets_table.html" %}
+<div> 
+   View as:
+   <a href="/tickets">Table</a>
+   <a href="/tickets?view=list">List</a>
 </div>
+
+{% if view_type.as_str() == "table" %}
+{% include "tickets_table.html" %}
+{% else %}
+{% include "tickets_list.html" %}
+{% endif %}
 {% endblock %}

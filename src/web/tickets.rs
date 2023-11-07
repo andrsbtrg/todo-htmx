@@ -1,5 +1,5 @@
 use axum::{
-    extract::Path,
+    extract::{Path, Query},
     routing::{delete, get, post, put},
     Extension, Form, Router,
 };
@@ -22,7 +22,23 @@ pub fn routes() -> Router {
         .route("/tickets/:id/todo", put(update_ticket_todo))
 }
 
-async fn get_tickets(Extension(mc): Extension<ModelController>, ctx: Context) -> TicketsTemplate {
+#[derive(Deserialize, Debug)]
+pub enum View {
+    #[serde(rename = "table")]
+    Table,
+    #[serde(rename = "list")]
+    List,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ViewParams {
+    view: Option<View>,
+}
+async fn get_tickets(
+    Extension(mc): Extension<ModelController>,
+    ctx: Context,
+    Query(view_params): Query<ViewParams>,
+) -> TicketsTemplate {
     println!("->> {:<12} - get_tickets", "HANDLER");
     let tickets = mc.get_tickets(&ctx).await.unwrap_or_default();
     let username = ctx.username();
@@ -40,8 +56,20 @@ async fn get_tickets(Extension(mc): Extension<ModelController>, ctx: Context) ->
         }
     }
 
+    let mut view_type: String = String::new();
+
+    if let Some(v) = view_params.view {
+        match v {
+            View::Table => view_type = "table".to_string(),
+            View::List => view_type = "list".to_string(),
+        }
+    } else {
+        view_type = "table".to_string();
+    }
+
     TicketsTemplate {
         username: username.to_string(),
+        view_type,
         tickets_todo,
         tickets_doing,
         tickets_done,

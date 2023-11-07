@@ -1,0 +1,34 @@
+<div id="ticket-list" class="rowlike-table">
+	<h3>to-do</h3>
+	<div id="todo-list">
+		{% for ticket in tickets_todo %}
+		<div class="list-item">
+			{{ ticket.title }}
+			<button class="arrow-button-list" hx-put="/tickets/{{ticket.id}}/doing" hx-target="#ticket-list"
+				hx-swap="innerHTML">➡️ </button>
+		</div>
+
+		{% endfor %}
+	</div>
+	<h3>doing</h3>
+
+	<div id="doing-list">
+		{% for ticket in tickets_doing %}
+		<div class="list-item">
+			{{ ticket.title }}
+			<button class="arrow-button-list" hx-put="/tickets/{{ticket.id}}/done" hx-target="#ticket-list"
+				hx-swap="innerHTML">➡️ </button>
+		</div>
+
+		{% endfor %}
+	</div>
+
+	<div id="doing-list">
+		{% for ticket in tickets_done %}
+		<div class="list-item">
+			{{ ticket.title }}
+		</div>
+
+		{% endfor %}
+	</div>
+</div>
