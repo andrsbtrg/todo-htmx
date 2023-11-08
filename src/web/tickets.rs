@@ -24,6 +24,8 @@ pub fn routes() -> Router {
         .route("/tickets/:id/todo", put(update_ticket_todo))
 }
 
+/// View options
+/// TODO: try https://github.com/tokio-rs/axum/blob/main/examples/query-params-with-empty-strings/src/main.rs
 #[derive(Deserialize, Debug)]
 pub enum View {
     #[serde(rename = "table")]
