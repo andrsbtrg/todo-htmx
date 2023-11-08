@@ -78,6 +78,21 @@ body p {
     align-items: center; /* Center vertically */
 }
 
+.inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.inline p {
+    margin: 0; /* Remove default margins for a cleaner look */
+    padding: 10px; /* Add some spacing between the elements */
+    color: gray;
+}
+.inline h3 {
+    margin: 0; /* Remove default margins for a cleaner look */
+    padding: 10px; /* Add some spacing between the elements */
+}
+
 /* Style the h3 and a elements within the header-left */
 .header-left h3 {
     margin: 0;
@@ -187,6 +202,11 @@ input:invalid {
     transition: background-color 0.3s ease;
     margin-top: 0px;
     background: transparent;
+    color: rgba(255,255,255,0.1);
+}
+
+.arrow-button:hover {
+    color: var(--text);
 }
 
 .arrow-button-list {
@@ -200,6 +220,10 @@ input:invalid {
     right: 0;
     line-height: 100%;
     background: transparent;
+    color: rgba(255,255,255,0.1);
+}
+.arrow-button-list:hover {
+    color: var(--text);
 }
 .delete-button {
     background-color: #ff4d4f;

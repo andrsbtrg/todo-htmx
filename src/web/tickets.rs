@@ -1,5 +1,7 @@
+use askama_axum::IntoResponse;
 use axum::{
     extract::{Path, Query},
+    http::{header::REFERER, HeaderMap},
     routing::{delete, get, post, put},
     Extension, Form, Router,
 };
@@ -8,7 +10,7 @@ use serde::Deserialize;
 use crate::{
     ctx::Context,
     models::{ModelController, Ticket, TicketFC},
-    templates::{TicketCreate, TicketTemplate, TicketsTable, TicketsTemplate},
+    templates::{TicketCreate, TicketTemplate, TicketsList, TicketsTable, TicketsTemplate},
 };
 
 pub fn routes() -> Router {
@@ -107,35 +109,49 @@ async fn update_ticket_doing(
     Extension(mc): Extension<ModelController>,
     ctx: Context,
     Path(id): Path<i32>,
-) -> TicketsTable {
+    headers: HeaderMap,
+) -> impl IntoResponse {
     println!("->> {:<12} - update_ticket", "HANDLER");
+
+    let referer: String = headers.get(REFERER).unwrap().to_str().unwrap().to_string();
+
     let tickets = mc.update_ticket(&ctx, id, "doing").await.unwrap();
 
-    render_ticket_table(tickets)
+    println!("{}", referer);
+
+    render_ticket_table(tickets, &referer)
 }
 async fn update_ticket_done(
     Extension(mc): Extension<ModelController>,
     ctx: Context,
     Path(id): Path<i32>,
-) -> TicketsTable {
+    headers: HeaderMap,
+) -> impl IntoResponse {
     println!("->> {:<12} - update_ticket", "HANDLER");
     let tickets = mc.update_ticket(&ctx, id, "done").await.unwrap();
 
-    render_ticket_table(tickets)
+    let referer: String = headers.get(REFERER).unwrap().to_str().unwrap().to_string();
+
+    println!("{}", referer);
+    render_ticket_table(tickets, &referer)
 }
 
 async fn update_ticket_todo(
     Extension(mc): Extension<ModelController>,
     ctx: Context,
     Path(id): Path<i32>,
-) -> TicketsTable {
+    headers: HeaderMap,
+) -> impl IntoResponse {
     println!("->> {:<12} - update_ticket", "HANDLER");
     let tickets = mc.update_ticket(&ctx, id, "to-do").await.unwrap();
 
-    render_ticket_table(tickets)
+    let referer: String = headers.get(REFERER).unwrap().to_str().unwrap().to_string();
+
+    println!("{}", referer);
+    render_ticket_table(tickets, &referer)
 }
 
-fn render_ticket_table(tickets: Vec<Ticket>) -> TicketsTable {
+fn render_ticket_table(tickets: Vec<Ticket>, referer: &str) -> impl IntoResponse {
     let mut tickets_todo: Vec<Ticket> = Vec::with_capacity(tickets.len());
     let mut tickets_doing: Vec<Ticket> = Vec::with_capacity(tickets.len());
     let mut tickets_done: Vec<Ticket> = Vec::with_capacity(tickets.len());
@@ -149,10 +165,38 @@ fn render_ticket_table(tickets: Vec<Ticket>) -> TicketsTable {
         }
     }
 
-    TicketsTable {
-        tickets_todo,
-        tickets_doing,
-        tickets_done,
+    let mut view = String::new();
+    if referer.contains("list") {
+        view = "list".to_string();
+    } else {
+        view = "table".to_string();
+    }
+
+    match view.as_str() {
+        "table" => {
+            return TicketsTable {
+                tickets_todo,
+                tickets_doing,
+                tickets_done,
+            }
+            .into_response()
+        }
+        "list" => {
+            return TicketsList {
+                tickets_todo,
+                tickets_doing,
+                tickets_done,
+            }
+            .into_response()
+        }
+        _ => {
+            return TicketsTable {
+                tickets_todo,
+                tickets_doing,
+                tickets_done,
+            }
+            .into_response()
+        }
     }
 }
 

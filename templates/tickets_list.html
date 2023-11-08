@@ -1,28 +1,45 @@
+{% let len = tickets_todo.len() %}
 <div id="ticket-list" class="rowlike-table">
-	<h3>to-do</h3>
+	<div class="inline">
+		<h3 class="inline">to-do</h3>
+		<p class="inline"> {{ len }} </p>
+	</div>
 	<div id="todo-list">
 		{% for ticket in tickets_todo %}
 		<div class="list-item">
 			{{ ticket.title }}
 			<button class="arrow-button-list" hx-put="/tickets/{{ticket.id}}/doing" hx-target="#ticket-list"
-				hx-swap="innerHTML">➡️ </button>
+				hx-swap="outerHTML">⬇️ </button>
 		</div>
 
 		{% endfor %}
 	</div>
-	<h3>doing</h3>
+
+	{% let len_doing = tickets_doing.len() %}
+	<div class="inline">
+		<h3 class="inline">doing</h3>
+		<p class="inline"> {{ len_doing }} </p>
+	</div>
 
 	<div id="doing-list">
 		{% for ticket in tickets_doing %}
 		<div class="list-item">
 			{{ ticket.title }}
+
+			<!-- <button class="arrow-button-list" hx-put="/tickets/{{ticket.id}}/todo" hx-target="#ticket-list" -->
+			<!-- 	hx-swap="outerHTML">⬆️ </button> -->
 			<button class="arrow-button-list" hx-put="/tickets/{{ticket.id}}/done" hx-target="#ticket-list"
-				hx-swap="innerHTML">➡️ </button>
+				hx-swap="outerHTML">☑️ </button>
 		</div>
 
 		{% endfor %}
 	</div>
 
+	{% let len_done = tickets_done.len() %}
+	<div class="inline">
+		<h3 class="inline">done</h3>
+		<p class="inline"> {{ len_done }} </p>
+	</div>
 	<div id="doing-list">
 		{% for ticket in tickets_done %}
 		<div class="list-item">
