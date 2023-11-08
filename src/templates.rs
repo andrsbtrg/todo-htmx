@@ -1,3 +1,13 @@
+mod filters {
+    use chrono::{DateTime, Utc};
+
+    /// formats DateTime<UTC> to something shorter
+    pub fn fmtdate(s: &DateTime<Utc>) -> ::askama::Result<String> {
+        let date = format!("{}", s.format("%Y-%m-%d"));
+        Ok(date)
+    }
+}
+
 use askama::Template;
 
 use crate::{models::Ticket, web::tickets::View};

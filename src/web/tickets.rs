@@ -60,6 +60,10 @@ async fn get_tickets(
         }
     }
 
+    // let date = tickets_todo.get(0).unwrap().created_at.format("%Y-%m-%d");
+    let date = format!("{}", tickets_todo.get(0).unwrap().created_at);
+    println!("date: {}", date);
+
     let view: View = view_params.view.unwrap_or(View::Table);
 
     TicketsTemplate {
@@ -85,8 +89,6 @@ async fn create_ticket(
     let ticket_fc = TicketFC::new(payload.title, payload.description);
 
     let ticket = mc.create_ticket(ctx, ticket_fc).await.unwrap();
-
-    dbg!(&ticket);
 
     TicketTemplate { ticket }
 }

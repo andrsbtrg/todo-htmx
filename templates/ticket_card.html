@@ -5,7 +5,7 @@
 		<div class="status-indicator">{{ticket.status}}</div>
 
 		<button class="arrow-button" hx-put="/tickets/{{ticket.id}}/doing" hx-target="#ticket-table"
-			hx-swap="innerHTML">➡️ </button>
+			hx-swap="outerHTML">➡️ </button>
 
 		<p class="small-text">Created by: {{ticket.creator_name}}</p>
 		<p class="small-text">ID: {{ticket.id}}</p>

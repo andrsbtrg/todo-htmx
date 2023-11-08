@@ -13,7 +13,8 @@
 			<div class="card">
 				<div class="card-header">{{ ticket.title }}</div>
 				<div class="card-body">
-					<p>Description: {{ ticket.description }}</p>
+					<p>{{ ticket.description }}</p>
+					<p class="small-text">{{ticket.created_at|fmtdate}}</p>
 
 					<div class="status-indicator">{{ticket.status}}</div>
 					<!-- <p>Status: {{ticket.status}}</p> -->
@@ -39,7 +40,8 @@
 			<div class="card">
 				<div class="card-header">{{ ticket.title }}</div>
 				<div class="card-body">
-					<p>Description: {{ ticket.description }}</p>
+					<p> {{ ticket.description }}</p>
+					<p class="small-text">{{ticket.created_at|fmtdate}}</p>
 
 					<div class="status-indicator">{{ticket.status}}</div>
 					<!-- <p>Status: {{ticket.status}}</p> -->
@@ -66,7 +68,8 @@
 			<div class="card">
 				<div class="card-header">{{ ticket.title }}</div>
 				<div class="card-body">
-					<p>Description: {{ ticket.description }}</p>
+					<p>{{ ticket.description }}</p>
+					<p class="small-text">{{ticket.created_at|fmtdate}}</p>
 
 					<div class="status-indicator">{{ticket.status}}</div>
 
