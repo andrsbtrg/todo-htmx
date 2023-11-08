@@ -86,6 +86,8 @@ async fn create_ticket(
 
     let ticket = mc.create_ticket(ctx, ticket_fc).await.unwrap();
 
+    dbg!(&ticket);
+
     TicketTemplate { ticket }
 }
 
