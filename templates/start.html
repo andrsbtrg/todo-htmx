@@ -8,11 +8,10 @@
 </div>
 <div class="header-right">
    <a href="/tickets">Tickets</a>
-   <a href="/logout">Logout</a>
 </div>
 {% endblock %}
 
 {% block content %}
 <h1>Home</h1>
-<p>Hello, {{username}}!</p>
+<p>Hello, {{ username|capitalize }}!</p>
 {% endblock %}

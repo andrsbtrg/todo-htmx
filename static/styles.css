@@ -30,6 +30,12 @@ body {
     font: 112.5%/1.45 var(--font-display);
 }
 
+.rowlike-table {
+    display: flex;
+    width: 95%;
+    flex-direction: column;
+}
+
 /* container */
 .responsive-three-column-grid {
     display:block;
@@ -70,6 +76,21 @@ body p {
     display: flex; /* Use flexbox for layout */
     justify-content: space-between; /* Space elements evenly horizontally */
     align-items: center; /* Center vertically */
+}
+
+.inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.inline p {
+    margin: 0; /* Remove default margins for a cleaner look */
+    padding: 10px; /* Add some spacing between the elements */
+    color: gray;
+}
+.inline h3 {
+    margin: 0; /* Remove default margins for a cleaner look */
+    padding: 10px; /* Add some spacing between the elements */
 }
 
 /* Style the h3 and a elements within the header-left */
@@ -126,6 +147,17 @@ input:invalid {
     align-items: center;
 }
 
+.list-item {
+    background-color: var(--secondary);
+    color: var(--text);
+    border-radius: 6px;
+    margin: 10px;
+    padding: 10px;
+    /* border: 1px solid dimgray; */
+    /* box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3); */
+    min-width: 300px;
+    position: relative;
+}
 .card {
     background-color: var(--secondary);
     color: var(--text);
@@ -166,9 +198,32 @@ input:invalid {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 26px;
     transition: background-color 0.3s ease;
     margin-top: 0px;
+    background: transparent;
+    color: rgba(255,255,255,0.1);
+}
+
+.arrow-button:hover {
+    color: var(--text);
+}
+
+.arrow-button-list {
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 26px;
+    transition: background-color 0.3s ease;
+    margin-top: 0px;
+    position: absolute;
+    right: 0;
+    line-height: 100%;
+    background: transparent;
+    color: rgba(255,255,255,0.1);
+}
+.arrow-button-list:hover {
+    color: var(--text);
 }
 .delete-button {
     background-color: #ff4d4f;

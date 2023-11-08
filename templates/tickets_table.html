@@ -1,62 +1,80 @@
-<div>
-	<h3>To Do <button hx-get="/tickets/new" hx-target="#tickets" hx-swap="afterbegin" class="arrow-button"> ➕ </button>
-	</h3>
-	<div id="tickets">
-		{% for ticket in tickets_todo %}
-		<div class="card">
-			<div class="card-header">{{ ticket.title }}</div>
-			<div class="card-body">
-				<p>Description: {{ ticket.description }}</p>
+<div id="ticket-table" class="responsive-three-column-grid">
+	<div>
 
-				<div class="status-indicator">{{ticket.status}}</div>
-				<!-- <p>Status: {{ticket.status}}</p> -->
-
-				<button class="arrow-button" hx-put="/tickets/{{ticket.id}}/doing" hx-target="#ticket-table"
-					hx-swap="innerHTML">➡️ </button>
-
-				<p class="small-text">Created by: {{ticket.creator_name}}</p>
-				<p class="small-text">ID: {{ticket.id}}</p>
-			</div>
+		{% let len = tickets_todo.len() %}
+		<div class="inline">
+			<h3 class="inline">to-do</h3>
+			<p class="inline"> {{ len }} </p>
+			<button hx-get="/tickets/new" hx-target="#tickets" hx-swap="afterbegin" class="arrow-button"> ➕
+			</button>
 		</div>
-		{% endfor %}
-	</div>
-</div>
-<div>
-	<h3>Doing</h1>
-		<div id="tickets-doing">
-			{% for ticket in tickets_doing %}
+		<div id="tickets">
+			{% for ticket in tickets_todo %}
 			<div class="card">
 				<div class="card-header">{{ ticket.title }}</div>
 				<div class="card-body">
-					<p>Description: {{ ticket.description }}</p>
+					<p>{{ ticket.description }}</p>
+					<p class="small-text">{{ticket.created_at|fmtdate}}</p>
 
 					<div class="status-indicator">{{ticket.status}}</div>
 					<!-- <p>Status: {{ticket.status}}</p> -->
 
-					<button class="arrow-button" hx-put="/tickets/{{ticket.id}}/todo" hx-target="#ticket-table"
-						hx-swap="innerHTML">⬅️ </button>
-					<button class="arrow-button" hx-put="/tickets/{{ticket.id}}/done" hx-target="#ticket-table"
-						hx-swap="innerHTML">➡️ </button>
+					<button class="arrow-button" hx-put="/tickets/{{ticket.id}}/doing" hx-target="#ticket-table"
+						hx-swap="outerHTML">➡️ </button>
+
 					<p class="small-text">Created by: {{ticket.creator_name}}</p>
 					<p class="small-text">ID: {{ticket.id}}</p>
 				</div>
 			</div>
 			{% endfor %}
 		</div>
-</div>
-<div>
-	<h3>Done</h1>
+	</div>
+	<div>
+		{% let len_doing = tickets_doing.len() %}
+		<div class="inline">
+			<h3 class="inline">doing</h3>
+			<p class="inline"> {{ len_doing }} </p>
+		</div>
+		<div id="tickets-doing">
+			{% for ticket in tickets_doing %}
+			<div class="card">
+				<div class="card-header">{{ ticket.title }}</div>
+				<div class="card-body">
+					<p> {{ ticket.description }}</p>
+					<p class="small-text">{{ticket.created_at|fmtdate}}</p>
+
+					<div class="status-indicator">{{ticket.status}}</div>
+					<!-- <p>Status: {{ticket.status}}</p> -->
+
+					<button class="arrow-button" hx-put="/tickets/{{ticket.id}}/todo" hx-target="#ticket-table"
+						hx-swap="outerHTML">⬅️ </button>
+					<button class="arrow-button" hx-put="/tickets/{{ticket.id}}/done" hx-target="#ticket-table"
+						hx-swap="outerHTML">☑️ </button>
+					<p class="small-text">Created by: {{ticket.creator_name}}</p>
+					<p class="small-text">ID: {{ticket.id}}</p>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+	<div>
+		{% let len_done = tickets_done.len() %}
+		<div class="inline">
+			<h3 class="inline">done</h3>
+			<p class="inline"> {{ len_done }} </p>
+		</div>
 		<div id="tickets-done">
 			{% for ticket in tickets_done %}
 			<div class="card">
 				<div class="card-header">{{ ticket.title }}</div>
 				<div class="card-body">
-					<p>Description: {{ ticket.description }}</p>
+					<p>{{ ticket.description }}</p>
+					<p class="small-text">{{ticket.created_at|fmtdate}}</p>
 
 					<div class="status-indicator">{{ticket.status}}</div>
 
 					<button class="arrow-button" hx-put="/tickets/{{ticket.id}}/doing" hx-target="#ticket-table"
-						hx-swap="innerHTML">⬅️ </button>
+						hx-swap="outerHTML">⬅️ </button>
 
 					<p class="small-text">Created by: {{ticket.creator_name}}</p>
 					<p class="small-text">ID: {{ticket.id}}</p>
@@ -68,4 +86,6 @@
 			</div>
 			{% endfor %}
 		</div>
+	</div>
+
 </div>

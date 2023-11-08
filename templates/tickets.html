@@ -8,14 +8,21 @@
 </div>
 <div class="header-right">
    <a href="/">Home</a>
-   <a href="/logout">Logout</a>
 </div>
 {% endblock %}
 
 {% block content %}
 <h1>My Tickets</h1>
-
-<div id="ticket-table" class="responsive-three-column-grid">
-		{% include "tickets_table.html" %}
+<div> 
+   View as:
+   <a href="/tickets">Table</a>
+   <a href="/tickets?view=list">List</a>
 </div>
+
+{% match view_type %}
+{% when View::Table %}
+{% include "tickets_table.html" %}
+{% when View::List %}
+{% include "tickets_list.html" %}
+{% endmatch %}
 {% endblock %}

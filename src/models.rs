@@ -1,11 +1,12 @@
 use crate::{ctx::Context, Error, Result};
 
-use serde::{Deserialize, Serialize};
-use sqlx::{FromRow, PgPool, Postgres};
+use chrono::Utc;
+use serde::Deserialize;
+use sqlx::{PgPool, Postgres};
 use std::sync::Mutex;
 
 /// Represents the Ticket that is visualized and sent to the client
-#[derive(Serialize, Clone, Debug, sqlx::FromRow)]
+#[derive(Clone, Debug, sqlx::FromRow)]
 pub struct Ticket {
     pub id: i32,
     pub creator_id: i32,
@@ -13,16 +14,18 @@ pub struct Ticket {
     pub title: String,
     pub status: String,
     pub description: String,
+    pub created_at: chrono::DateTime<Utc>,
 }
 
-/// Represents a Ticket Stored in DB
-#[derive(Serialize, Clone, Debug, FromRow)]
+/// Represents a Ticket Stored in 'tickets' table
+#[derive(Clone, Debug, sqlx::FromRow)]
 pub struct TicketC {
     pub id: i32,
     pub creator_id: i32,
     pub title: String,
     pub status: String,
     pub description: String,
+    pub created_at: chrono::DateTime<Utc>,
 }
 
 /// This helps create tickets, thus it needs Deserialize
@@ -41,6 +44,7 @@ impl Ticket {
             title: ticket_c.title,
             status: ticket_c.status,
             description: ticket_c.description,
+            created_at: ticket_c.created_at,
         }
     }
 }
@@ -77,12 +81,13 @@ impl ModelController {
 
         let pool = self.db.lock().unwrap().to_owned();
         match sqlx::query_as::<Postgres, TicketC>(
-            r#"INSERT INTO tickets (title, status, description, creator_id) VALUES ($1,$2,$3,$4) RETURNING *;"#,
+            r#"INSERT INTO tickets (title, status, description, creator_id, created_at) VALUES ($1,$2,$3,$4,$5) RETURNING *;"#,
         )
         .bind(ticket_fc.title)
         .bind(ticket_fc.status)
         .bind(ticket_fc.description)
         .bind(creator_id)
+        .bind(Utc::now())
         .fetch_one(&pool)
         .await
         {
@@ -96,10 +101,11 @@ impl ModelController {
                     title: ticket.title,
                     status: ticket.status,
                     description: ticket.description,
+                    created_at: ticket.created_at,
                     })
             }
             Err(e) => {
-                println!("Failed to execute query: {:?}", e);
+                eprintln!("Failed to execute query: {:?}", e);
                 return Err(Error::TicketCreationFailed);
             }
         }
@@ -110,7 +116,7 @@ impl ModelController {
 
         let pool = self.db.lock().unwrap().to_owned();
         match sqlx::query_as::<Postgres, Ticket>(r#"
-SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.creator_id, users.username AS creator_name
+SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.created_at, tickets.creator_id, users.username AS creator_name
 FROM tickets
 INNER JOIN users ON tickets.creator_id = users.user_id;
         "#)
@@ -237,7 +243,7 @@ INNER JOIN users ON tickets.creator_id = users.user_id;
                 // If the UPDATE is successful, perform the SELECT operation
                 match sqlx::query_as::<Postgres, Ticket>(
                 r#"
-    SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.creator_id, users.username AS creator_name
+    SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.created_at, tickets.creator_id, users.username AS creator_name
     FROM tickets
     INNER JOIN users ON tickets.creator_id = users.user_id;
                 "#,
