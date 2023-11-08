@@ -58,20 +58,11 @@ async fn get_tickets(
         }
     }
 
-    let mut view_type: String = String::new();
-
-    if let Some(v) = view_params.view {
-        match v {
-            View::Table => view_type = "table".to_string(),
-            View::List => view_type = "list".to_string(),
-        }
-    } else {
-        view_type = "table".to_string();
-    }
+    let view: View = view_params.view.unwrap_or(View::Table);
 
     TicketsTemplate {
         username: username.to_string(),
-        view_type,
+        view_type: view,
         tickets_todo,
         tickets_doing,
         tickets_done,
@@ -165,23 +156,8 @@ fn render_ticket_table(tickets: Vec<Ticket>, referer: &str) -> impl IntoResponse
         }
     }
 
-    let mut view = String::new();
-    if referer.contains("list") {
-        view = "list".to_string();
-    } else {
-        view = "table".to_string();
-    }
-
-    match view.as_str() {
-        "table" => {
-            return TicketsTable {
-                tickets_todo,
-                tickets_doing,
-                tickets_done,
-            }
-            .into_response()
-        }
-        "list" => {
+    match referer.contains(r#"list"#) {
+        true => {
             return TicketsList {
                 tickets_todo,
                 tickets_doing,
@@ -189,14 +165,12 @@ fn render_ticket_table(tickets: Vec<Ticket>, referer: &str) -> impl IntoResponse
             }
             .into_response()
         }
-        _ => {
-            return TicketsTable {
-                tickets_todo,
-                tickets_doing,
-                tickets_done,
-            }
-            .into_response()
+        false => TicketsTable {
+            tickets_todo,
+            tickets_doing,
+            tickets_done,
         }
+        .into_response(),
     }
 }
 

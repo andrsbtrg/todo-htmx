@@ -19,9 +19,10 @@
    <a href="/tickets?view=list">List</a>
 </div>
 
-{% if view_type.as_str() == "table" %}
+{% match view_type %}
+{% when View::Table %}
 {% include "tickets_table.html" %}
-{% else %}
+{% when View::List %}
 {% include "tickets_list.html" %}
-{% endif %}
+{% endmatch %}
 {% endblock %}
