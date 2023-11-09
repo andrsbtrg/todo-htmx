@@ -1,13 +1,15 @@
 <div class="card">
 	<div class="card-header">{{ ticket.title }}</div>
 	<div class="card-body">
+		<p class="small-text">{{ticket.created_at|fmtdate}}</p>
 		<p>{{ ticket.description }}</p>
-		<div class="status-indicator">{{ticket.status}}</div>
-
-		<button class="arrow-button" hx-put="/tickets/{{ticket.id}}/doing" hx-target="#ticket-table"
-			hx-swap="outerHTML">➡️ </button>
+		<select class="status-indicator" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
+			hx-target="#ticket-table" hx-swap="outerHTML">
+			<option selected value="to-do">to-do</option>
+			<option value="doing">doing</option>
+			<option value="done">done</option>
+		</select>
 
 		<p class="small-text">Created by: {{ticket.creator_name}}</p>
-		<p class="small-text">ID: {{ticket.id}}</p>
 	</div>
 </div>

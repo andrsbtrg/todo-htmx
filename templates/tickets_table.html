@@ -13,17 +13,18 @@
 			<div class="card">
 				<div class="card-header">{{ ticket.title }}</div>
 				<div class="card-body">
-					<p>{{ ticket.description }}</p>
 					<p class="small-text">{{ticket.created_at|fmtdate}}</p>
+					<p>{{ ticket.description }}</p>
 
-					<div class="status-indicator">{{ticket.status}}</div>
-					<!-- <p>Status: {{ticket.status}}</p> -->
-
-					<button class="arrow-button" hx-put="/tickets/{{ticket.id}}/doing" hx-target="#ticket-table"
-						hx-swap="outerHTML">➡️ </button>
+					<select class="status-indicator" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
+						hx-target="#ticket-table" hx-swap="outerHTML">
+						<option selected value="to-do">to-do</option>
+						<option value="doing">doing</option>
+						<option value="done">done</option>
+					</select>
 
 					<p class="small-text">Created by: {{ticket.creator_name}}</p>
-					<p class="small-text">ID: {{ticket.id}}</p>
+					<!-- <p class="small-text">ID: {{ticket.id}}</p> -->
 				</div>
 			</div>
 			{% endfor %}
@@ -40,18 +41,17 @@
 			<div class="card">
 				<div class="card-header">{{ ticket.title }}</div>
 				<div class="card-body">
-					<p> {{ ticket.description }}</p>
 					<p class="small-text">{{ticket.created_at|fmtdate}}</p>
+					<p> {{ ticket.description }}</p>
 
-					<div class="status-indicator">{{ticket.status}}</div>
-					<!-- <p>Status: {{ticket.status}}</p> -->
-
-					<button class="arrow-button" hx-put="/tickets/{{ticket.id}}/todo" hx-target="#ticket-table"
-						hx-swap="outerHTML">⬅️ </button>
-					<button class="arrow-button" hx-put="/tickets/{{ticket.id}}/done" hx-target="#ticket-table"
-						hx-swap="outerHTML">☑️ </button>
+					<select class="status-indicator" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
+						hx-target="#ticket-table" hx-swap="outerHTML">
+						<option value="to-do">to-do</option>
+						<option selected value="doing">doing</option>
+						<option value="done">done</option>
+					</select>
 					<p class="small-text">Created by: {{ticket.creator_name}}</p>
-					<p class="small-text">ID: {{ticket.id}}</p>
+					<!-- <p class="small-text">ID: {{ticket.id}}</p> -->
 				</div>
 			</div>
 			{% endfor %}
@@ -68,16 +68,18 @@
 			<div class="card">
 				<div class="card-header">{{ ticket.title }}</div>
 				<div class="card-body">
-					<p>{{ ticket.description }}</p>
 					<p class="small-text">{{ticket.created_at|fmtdate}}</p>
+					<p>{{ ticket.description }}</p>
 
-					<div class="status-indicator">{{ticket.status}}</div>
-
-					<button class="arrow-button" hx-put="/tickets/{{ticket.id}}/doing" hx-target="#ticket-table"
-						hx-swap="outerHTML">⬅️ </button>
+					<select class="status-indicator" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
+						hx-target="#ticket-table" hx-swap="outerHTML">
+						<option value="to-do">to-do</option>
+						<option value="doing">doing</option>
+						<option selected value="done">done</option>
+					</select>
 
 					<p class="small-text">Created by: {{ticket.creator_name}}</p>
-					<p class="small-text">ID: {{ticket.id}}</p>
+					<!-- <p class="small-text">ID: {{ticket.id}}</p> -->
 					<button class="delete-button" hx-delete="/tickets/{{ ticket.id }}" hx-target="closest .card"
 						hx-confirm="Are you sure you want to delete this ticket?" hx-swap="delete">
 						Delete 🗑️
