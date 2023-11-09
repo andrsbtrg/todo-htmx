@@ -20,9 +20,6 @@ pub fn routes() -> Router {
         .route("/tickets", post(create_ticket))
         .route("/tickets/:id", delete(delete_ticket))
         .route("/tickets/:id", put(update_ticket))
-        .route("/tickets/:id/doing", put(update_ticket_doing))
-        .route("/tickets/:id/done", put(update_ticket_done))
-        .route("/tickets/:id/todo", put(update_ticket_todo))
 }
 
 /// View options
@@ -139,50 +136,6 @@ async fn update_ticket(
         .await
         .unwrap();
 
-    render_ticket_table(tickets, &referer)
-}
-
-async fn update_ticket_doing(
-    Extension(mc): Extension<ModelController>,
-    ctx: Context,
-    Path(id): Path<i32>,
-    headers: HeaderMap,
-) -> impl IntoResponse {
-    println!("->> {:<12} - update_ticket", "HANDLER");
-
-    let referer: String = headers.get(REFERER).unwrap().to_str().unwrap().to_string();
-
-    let tickets = mc.update_ticket(&ctx, id, "doing").await.unwrap();
-
-    render_ticket_table(tickets, &referer)
-}
-async fn update_ticket_done(
-    Extension(mc): Extension<ModelController>,
-    ctx: Context,
-    Path(id): Path<i32>,
-    headers: HeaderMap,
-) -> impl IntoResponse {
-    println!("->> {:<12} - update_ticket", "HANDLER");
-    let tickets = mc.update_ticket(&ctx, id, "done").await.unwrap();
-
-    let referer: String = headers.get(REFERER).unwrap().to_str().unwrap().to_string();
-
-    println!("{}", referer);
-    render_ticket_table(tickets, &referer)
-}
-
-async fn update_ticket_todo(
-    Extension(mc): Extension<ModelController>,
-    ctx: Context,
-    Path(id): Path<i32>,
-    headers: HeaderMap,
-) -> impl IntoResponse {
-    println!("->> {:<12} - update_ticket", "HANDLER");
-    let tickets = mc.update_ticket(&ctx, id, "to-do").await.unwrap();
-
-    let referer: String = headers.get(REFERER).unwrap().to_str().unwrap().to_string();
-
-    println!("{}", referer);
     render_ticket_table(tickets, &referer)
 }
 

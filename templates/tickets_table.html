@@ -77,13 +77,12 @@
 						<option value="doing">doing</option>
 						<option selected value="done">done</option>
 					</select>
-
-					<p class="small-text">Created by: {{ticket.creator_name}}</p>
 					<!-- <p class="small-text">ID: {{ticket.id}}</p> -->
 					<button class="delete-button" hx-delete="/tickets/{{ ticket.id }}" hx-target="closest .card"
 						hx-confirm="Are you sure you want to delete this ticket?" hx-swap="delete">
 						Delete 🗑️
 					</button>
+					<p class="small-text">Created by: {{ticket.creator_name}}</p>
 				</div>
 			</div>
 			{% endfor %}
