@@ -19,9 +19,7 @@ pub fn routes() -> Router {
         .route("/tickets/new", get(ticket_creator))
         .route("/tickets", post(create_ticket))
         .route("/tickets/:id", delete(delete_ticket))
-        .route("/tickets/:id/doing", put(update_ticket_doing))
-        .route("/tickets/:id/done", put(update_ticket_done))
-        .route("/tickets/:id/todo", put(update_ticket_todo))
+        .route("/tickets/:id", put(update_ticket))
 }
 
 /// View options
@@ -32,6 +30,30 @@ pub enum View {
     Table,
     #[serde(rename = "list")]
     List,
+}
+
+#[derive(Deserialize)]
+enum Status {
+    #[serde(rename = "doing")]
+    Doing,
+    #[serde(rename = "to-do")]
+    Todo,
+    #[serde(rename = "done")]
+    Done,
+}
+impl Status {
+    fn as_str(&self) -> &str {
+        match self {
+            Status::Doing => "doing",
+            Status::Todo => "to-do",
+            Status::Done => "done",
+        }
+    }
+}
+
+#[derive(Deserialize)]
+struct StatusUpdate {
+    status: Status,
 }
 
 #[derive(Debug, Deserialize)]
@@ -59,10 +81,6 @@ async fn get_tickets(
             _ => tickets_todo.push(ticket.to_owned()),
         }
     }
-
-    // let date = tickets_todo.get(0).unwrap().created_at.format("%Y-%m-%d");
-    let date = format!("{}", tickets_todo.get(0).unwrap().created_at);
-    println!("date: {}", date);
 
     let view: View = view_params.view.unwrap_or(View::Table);
 
@@ -102,49 +120,22 @@ async fn delete_ticket(
     mc.delete_ticket(ctx, id).await.unwrap();
 }
 
-async fn update_ticket_doing(
+async fn update_ticket(
     Extension(mc): Extension<ModelController>,
     ctx: Context,
     Path(id): Path<i32>,
     headers: HeaderMap,
+    axum::extract::Form(payload): axum::extract::Form<StatusUpdate>,
 ) -> impl IntoResponse {
     println!("->> {:<12} - update_ticket", "HANDLER");
 
     let referer: String = headers.get(REFERER).unwrap().to_str().unwrap().to_string();
 
-    let tickets = mc.update_ticket(&ctx, id, "doing").await.unwrap();
+    let tickets = mc
+        .update_ticket(&ctx, id, payload.status.as_str())
+        .await
+        .unwrap();
 
-    println!("{}", referer);
-
-    render_ticket_table(tickets, &referer)
-}
-async fn update_ticket_done(
-    Extension(mc): Extension<ModelController>,
-    ctx: Context,
-    Path(id): Path<i32>,
-    headers: HeaderMap,
-) -> impl IntoResponse {
-    println!("->> {:<12} - update_ticket", "HANDLER");
-    let tickets = mc.update_ticket(&ctx, id, "done").await.unwrap();
-
-    let referer: String = headers.get(REFERER).unwrap().to_str().unwrap().to_string();
-
-    println!("{}", referer);
-    render_ticket_table(tickets, &referer)
-}
-
-async fn update_ticket_todo(
-    Extension(mc): Extension<ModelController>,
-    ctx: Context,
-    Path(id): Path<i32>,
-    headers: HeaderMap,
-) -> impl IntoResponse {
-    println!("->> {:<12} - update_ticket", "HANDLER");
-    let tickets = mc.update_ticket(&ctx, id, "to-do").await.unwrap();
-
-    let referer: String = headers.get(REFERER).unwrap().to_str().unwrap().to_string();
-
-    println!("{}", referer);
     render_ticket_table(tickets, &referer)
 }
 

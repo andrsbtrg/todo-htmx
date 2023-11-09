@@ -8,8 +8,14 @@
 		{% for ticket in tickets_todo %}
 		<div class="list-item">
 			{{ ticket.title }}
-			<button class="arrow-button-list" hx-put="/tickets/{{ticket.id}}/doing" hx-target="#ticket-list"
-				hx-swap="outerHTML">⬇️ </button>
+
+			<select class="status-indicator-list" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
+				hx-target="#ticket-list" hx-swap="outerHTML">
+				<option selected value="to-do">to-do</option>
+				<option value="doing">doing</option>
+				<option value="done">done</option>
+			</select>
+
 		</div>
 
 		{% endfor %}
@@ -26,10 +32,12 @@
 		<div class="list-item">
 			{{ ticket.title }}
 
-			<!-- <button class="arrow-button-list" hx-put="/tickets/{{ticket.id}}/todo" hx-target="#ticket-list" -->
-			<!-- 	hx-swap="outerHTML">⬆️ </button> -->
-			<button class="arrow-button-list" hx-put="/tickets/{{ticket.id}}/done" hx-target="#ticket-list"
-				hx-swap="outerHTML">☑️ </button>
+			<select class="status-indicator-list" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
+				hx-target="#ticket-list" hx-swap="outerHTML">
+				<option value="to-do">to-do</option>
+				<option selected value="doing">doing</option>
+				<option value="done">done</option>
+			</select>
 		</div>
 
 		{% endfor %}
@@ -44,6 +52,13 @@
 		{% for ticket in tickets_done %}
 		<div class="list-item">
 			{{ ticket.title }}
+
+			<select class="status-indicator-list" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
+				hx-target="#ticket-list" hx-swap="outerHTML">
+				<option value="to-do">to-do</option>
+				<option value="doing">doing</option>
+				<option selected value="done">done</option>
+			</select>
 		</div>
 
 		{% endfor %}
