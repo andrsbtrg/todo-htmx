@@ -1,5 +1,5 @@
 {% let len = tickets_todo.len() %}
-<div id="ticket-list" class="rowlike-table">
+<div id="ticket-container" class="rowlike-table">
 	<div class="inline">
 		<h3 class="inline">to-do</h3>
 		<p class="inline"> {{ len }} </p>
@@ -11,7 +11,7 @@
 				hx-get="/tickets/{{ticket.id}}">
 				{{ticket.title}}</p>
 			<select class="status-indicator-list" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
-				hx-target="#ticket-list" hx-swap="outerHTML">
+				hx-target="#ticket-container" hx-swap="outerHTML">
 				<option selected value="to-do">to-do</option>
 				<option value="doing">doing</option>
 				<option value="done">done</option>
@@ -36,7 +36,7 @@
 				{{ticket.title}}</p>
 
 			<select class="status-indicator-list" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
-				hx-target="#ticket-list" hx-swap="outerHTML">
+				hx-target="#ticket-container" hx-swap="outerHTML">
 				<option value="to-do">to-do</option>
 				<option selected value="doing">doing</option>
 				<option value="done">done</option>
@@ -58,7 +58,7 @@
 				hx-get="/tickets/{{ticket.id}}">{{ticket.title}}</p>
 
 			<select class="status-indicator-list" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
-				hx-target="#ticket-list" hx-swap="outerHTML">
+				hx-target="#ticket-container" hx-swap="outerHTML">
 				<option value="to-do">to-do</option>
 				<option value="doing">doing</option>
 				<option selected value="done">done</option>

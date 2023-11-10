@@ -1,13 +1,34 @@
+{% let istodo -%}
+{% if ticket.status.as_str() == "to-do" -%}
+{% let istodo = "selected" -%}
+{% else -%}
+{% let istodo = "false" -%}
+{% endif -%}
+
+{% let isdoing -%}
+{% if ticket.status.as_str() == "doing" -%}
+{% let isdoing = "selected" -%}
+{% else -%}
+{% let isdoing = "false" -%}
+{% endif -%}
+
+{% let isdone -%}
+{% if ticket.status.as_str() == "done" -%}
+{% let isdone = "selected" -%}
+{% else -%}
+{% let isdone = "false" -%}
+{% endif -%}
+
 <div class="card">
 	<div class="card-header">{{ ticket.title }}</div>
 	<div class="card-body">
 		<p class="small-text">{{ticket.created_at|fmtdate}}</p>
 		<p>{{ ticket.description }}</p>
 		<select class="status-indicator" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
-			hx-target="#ticket-table" hx-swap="outerHTML">
-			<option selected value="to-do">to-do</option>
-			<option value="doing">doing</option>
-			<option value="done">done</option>
+			hx-target="#ticket-container" hx-swap="outerHTML">
+			<option {{ istodo }} value="to-do">to-do</option>
+			<option {{ isdoing }} value="doing">doing</option>
+			<option {{ isdone }} value="done">done</option>
 		</select>
 
 		<p class="small-text">Created by: {{ticket.creator_name}}</p>
