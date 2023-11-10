@@ -1,4 +1,4 @@
-<div id="ticket-table" class="responsive-three-column-grid">
+<div id="ticket-container" class="responsive-three-column-grid">
 	<div>
 
 		{% let len = tickets_todo.len() %}
@@ -14,7 +14,7 @@
 				<div class="card-body">
 					<p class="small-text">{{ticket.created_at|fmtdate}}</p>
 					<select class="status-indicator" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
-						hx-target="#ticket-table" hx-swap="outerHTML">
+						hx-target="#ticket-container" hx-swap="outerHTML">
 						<option selected value="to-do">to-do</option>
 						<option value="doing">doing</option>
 						<option value="done">done</option>
@@ -44,7 +44,7 @@
 					<p> {{ ticket.description }}</p>
 
 					<select class="status-indicator" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
-						hx-target="#ticket-table" hx-swap="outerHTML">
+						hx-target="#ticket-container" hx-swap="outerHTML">
 						<option value="to-do">to-do</option>
 						<option selected value="doing">doing</option>
 						<option value="done">done</option>
@@ -71,7 +71,7 @@
 					<p>{{ ticket.description }}</p>
 
 					<select class="status-indicator" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
-						hx-target="#ticket-table" hx-swap="outerHTML">
+						hx-target="#ticket-container" hx-swap="outerHTML">
 						<option value="to-do">to-do</option>
 						<option value="doing">doing</option>
 						<option selected value="done">done</option>
