@@ -23,7 +23,13 @@
 	<div class="card-header">{{ ticket.title }}</div>
 	<div class="card-body">
 		<p class="small-text">{{ticket.created_at|fmtdate}}</p>
+		{% if ticket.description.len() > 0 %}
 		<p>{{ ticket.description }}</p>
+		{% else %}
+		<p hx-get="/tickets/{{ticket.id}}/edit_description" hx-swap="outerHTML">
+			<i>Add description</i>
+		</p>
+		{% endif %}
 		<select class="status-indicator" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
 			hx-target="#ticket-container" hx-swap="outerHTML">
 			<option {{ istodo }} value="to-do">to-do</option>

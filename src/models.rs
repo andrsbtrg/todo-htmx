@@ -301,6 +301,7 @@ WHERE tickets.id = $1;
         description: String,
     ) -> Result<Ticket> {
         let pool = self.db.lock().unwrap().to_owned();
+        dbg!(id);
 
         let transaction = pool
             .begin()
@@ -308,7 +309,7 @@ WHERE tickets.id = $1;
             .map_err(|_| Error::DatabaseError)
             .unwrap();
         // Perform the UPDATE operation
-        match sqlx::query("UPDATE tickets SET description = $1 WHERE id = $2")
+        match sqlx::query("UPDATE tickets SET description = ($1) WHERE id = ($2)")
             .bind(description)
             .bind(id)
             .execute(&pool)
@@ -320,9 +321,11 @@ WHERE tickets.id = $1;
                 r#"
     SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.created_at, tickets.creator_id, users.username AS creator_name
     FROM tickets
-    INNER JOIN users ON tickets.creator_id = users.user_id;
+    INNER JOIN users ON tickets.creator_id = users.user_id
+    WHERE tickets.id = $1;
                 "#,
             )
+            .bind(id)
             .fetch_one(&pool)
             .await
             {

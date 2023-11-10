@@ -177,6 +177,7 @@ async fn add_ticket_data(
     let status = payload.description;
 
     let ticket = mc.update_ticket_description(ctx, id, status).await.unwrap();
+    dbg!(&ticket);
 
     TicketTemplate { ticket }
 }
