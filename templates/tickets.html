@@ -4,7 +4,7 @@
 
 {% block header %}
 <div class="header-left"> 
-<h3>Logged in: <a style="cursor:pointer"hx-target="body" hx-swap="beforeend" hx-get="/profile">{{username}}</a> </h3>
+<h3><a style="cursor:pointer"hx-target="body" hx-swap="beforeend" hx-get="/profile">{{username}}</a> </h3>
 </div>
 <div class="header-right">
    <a href="/">Home</a>
@@ -12,11 +12,19 @@
 {% endblock %}
 
 {% block content %}
-<h1>My Tickets</h1>
-<div> 
-   View as:
-   <a href="/tickets">Table</a>
-   <a href="/tickets?view=list">List</a>
+<div class="header-inline"> 
+   <h1>My Tickets</h1>
+   <a href="/tickets">
+      <img src="/icons/table2-columns.svg" class="svg-icon"/>
+      Table
+   </a>
+
+   <div> 
+   <a href="/tickets?view=list"> 
+      <img src="/icons/task-list.svg" class="svg-icon" />
+      <span>List</span>
+   </a>
+   </div>
 </div>
 
 {% match view_type %}

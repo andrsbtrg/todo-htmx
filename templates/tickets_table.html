@@ -5,8 +5,7 @@
 		<div class="inline">
 			<h3 class="inline">to-do</h3>
 			<p class="inline"> {{ len }} </p>
-			<button hx-get="/tickets/new" hx-target="#tickets" hx-swap="afterbegin" class="arrow-button"> ➕
-			</button>
+			<button hx-get="/tickets/new" hx-target="#tickets" hx-swap="afterbegin" class="add-button">+</button>
 		</div>
 		<div id="tickets">
 			{% for ticket in tickets_todo %}
@@ -66,7 +65,7 @@
 		<div id="tickets-done">
 			{% for ticket in tickets_done %}
 			<div class="card">
-				<div class="card-header">{{ ticket.title }}</div>
+				<div class="card-header"><s>{{ ticket.title }}</s></div>
 				<div class="card-body">
 					<p class="small-text">{{ticket.created_at|fmtdate}}</p>
 					<p>{{ ticket.description }}</p>
@@ -79,9 +78,7 @@
 					</select>
 					<!-- <p class="small-text">ID: {{ticket.id}}</p> -->
 					<button class="delete-button" hx-delete="/tickets/{{ ticket.id }}" hx-target="closest .card"
-						hx-confirm="Are you sure you want to delete this ticket?" hx-swap="delete">
-						Delete 🗑️
-					</button>
+						hx-confirm="Are you sure you want to delete this ticket?" hx-swap="delete">🗑️</button>
 					<p class="small-text">Created by: {{ticket.creator_name}}</p>
 				</div>
 			</div>
