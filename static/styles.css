@@ -2,19 +2,21 @@
   --primary: #F9FAFB;
   --secondary: #FCFCFD;
   --text: #000;
+  --color-invert: 10%;
 }
 
 .dark {
   --primary: #16181D;
   --secondary: #1A1D23;
   --text: #eee;
+  --color-invert: 80%;
 }
 
 /* Transitions  */
 
 .fade-me-out.htmx-swapping {
   opacity: 0;
-  transition: opacity 0.5s ease-out;
+  transition: opacity 0.3s ease-out;
 }
 
 body {
@@ -30,9 +32,12 @@ body {
     font: 112.5%/1.45 var(--font-display);
 }
 
+.svg-icon {
+    filter: invert(var(--color-invert));
+}
 .rowlike-table {
     display: flex;
-    width: 95%;
+    width: 100%;
     flex-direction: column;
 }
 
@@ -56,12 +61,19 @@ body {
 }
 
 body a {
-    color: #809fff;
+    color: var(--text);
+    text-decoration: none;
 }
 
 body p {
+    margin-left: 1rem;
     margin-top: 0px;
     margin-bottom: 0px;
+    font-size: 12pt;
+}
+
+h1 {
+    margin: 0px;
 }
 /* Apply a background color and styles for the header */
 .header {
@@ -78,10 +90,24 @@ body p {
     align-items: center; /* Center vertically */
 }
 
+/* a image, a span { */
+/*     vertical-align: middle; */
+/* } */
 .inline {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: baseline;
+}
+.header-inline {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+.inline a {
+    margin: 10px;
 }
 .inline p {
     margin: 0; /* Remove default margins for a cleaner look */
@@ -112,6 +138,16 @@ body p {
     margin-left: 10px; /* Add spacing between links */
 }
 
+.add-button {
+  color: var(--text);
+  border: none;
+  border-color: transparent;
+  border-radius: 5px;
+  background-color: var(--secondary);
+  cursor: pointer;
+  font-size: 24px;
+}
+
 input:invalid {
   border: 2px dashed coral;
 }
@@ -137,8 +173,10 @@ input:invalid {
 #content {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin-top: 50px;
+    /* align-items: flex-start; */
+    margin-top: 3rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
 }
 
 #login {
@@ -147,16 +185,19 @@ input:invalid {
     align-items: center;
 }
 
-.list-item {
+.list-item-parent {
     background-color: var(--secondary);
     color: var(--text);
-    border-radius: 6px;
+    border-radius: 14px;
     margin: 10px;
     padding: 10px;
-    /* border: 1px solid dimgray; */
-    /* box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3); */
     min-width: 300px;
-    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.list-item {
+    flex: 1;
 }
 .card {
     background-color: var(--secondary);
@@ -164,9 +205,9 @@ input:invalid {
     border-radius: 16px;
     margin: 10px;
     padding: 10px;
-    border: 1px solid dimgray;
-    /* box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3); */
+    /* border: 1px solid dimgray; */
     min-width: 300px;
+    box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.2);
 }
 
 .card-header {
@@ -182,16 +223,17 @@ input:invalid {
     font-size: 16px;
     background-color: var(--secondary);
     padding: 10px;
+    position: relative;
     /* border-top: 1px solid white; */
 }
 .status-indicator {
     background: var(--primary);
     transition: background-color 0.3s ease;
     border-radius: 10px;
-    position: relative;
+    position: absolute;
     padding: 7px;
-    right: -225px;
-    top: -79px;
+    right: 0px;
+    top: 0px;
     text-align: center;
     max-width: 100px;
     border: none;
@@ -205,10 +247,10 @@ input:invalid {
 .status-indicator-list {
     background: var(--primary);
     border-radius: 10px;
-    position: absolute;
-    padding: 7px;
-    right: 7px;
-    bottom: 7px;
+    /* position: absolute; */
+    padding: 9px;
+    /* right: 7px; */
+    /* bottom: 7px; */
     text-align: center;
     max-width: 100px;
     border: none;
@@ -220,7 +262,8 @@ input:invalid {
     background: #5686F5;
 }
 .delete-button {
-    background-color: #ff4d4f;
+    /* background-color: #ff4d4f; */
+    background-color: var(--secondary);
     color: white;
     border: none;
     border-radius: 10px;
@@ -228,10 +271,10 @@ input:invalid {
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s ease;
-    margin-top: 10px;
-    position: relative;
-    right: -140px;
-    top: 24px;
+    /* margin-top: 10px; */
+    position: absolute;
+    left: 0px;
+    top: -58px;
 }
 
 .delete-button:hover {
