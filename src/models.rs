@@ -293,4 +293,59 @@ WHERE tickets.id = $1;
             Err(_) => Err(Error::NoTicketsFound),
         }
     }
+
+    pub async fn update_ticket_description(
+        &self,
+        ctx: Context,
+        id: i32,
+        description: String,
+    ) -> Result<Ticket> {
+        let pool = self.db.lock().unwrap().to_owned();
+
+        let transaction = pool
+            .begin()
+            .await
+            .map_err(|_| Error::DatabaseError)
+            .unwrap();
+        // Perform the UPDATE operation
+        match sqlx::query("UPDATE tickets SET description = $1 WHERE id = $2")
+            .bind(description)
+            .bind(id)
+            .execute(&pool)
+            .await
+        {
+            Ok(_) => {
+                // If the UPDATE is successful, perform the SELECT operation
+                match sqlx::query_as::<Postgres, Ticket>(
+                r#"
+    SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.created_at, tickets.creator_id, users.username AS creator_name
+    FROM tickets
+    INNER JOIN users ON tickets.creator_id = users.user_id;
+                "#,
+            )
+            .fetch_one(&pool)
+            .await
+            {
+                Ok(tickets) => {
+                    // Commit the transaction
+                    Ok(tickets)
+                }
+                Err(e) => {
+                    // Rollback the transaction on SELECT error
+                    eprintln!("{:?}", e);
+                    Err(Error::UpdateTicketError)
+                }
+            }
+            }
+            Err(e) => {
+                // Rollback the transaction on UPDATE error
+                let _ = transaction
+                    .rollback()
+                    .await
+                    .map_err(|_| Error::DatabaseError);
+                eprintln!("{:?}", e);
+                Err(Error::UpdateTicketError)
+            }
+        }
+    }
 }
