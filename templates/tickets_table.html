@@ -13,14 +13,14 @@
 				<div class="card-header">{{ ticket.title }}</div>
 				<div class="card-body">
 					<p class="small-text">{{ticket.created_at|fmtdate}}</p>
-					<p>{{ ticket.description }}</p>
-
 					<select class="status-indicator" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
 						hx-target="#ticket-table" hx-swap="outerHTML">
 						<option selected value="to-do">to-do</option>
 						<option value="doing">doing</option>
 						<option value="done">done</option>
 					</select>
+					<p>{{ ticket.description }}</p>
+
 
 					<p class="small-text">Created by: {{ticket.creator_name}}</p>
 					<!-- <p class="small-text">ID: {{ticket.id}}</p> -->
