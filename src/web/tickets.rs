@@ -10,7 +10,10 @@ use serde::Deserialize;
 use crate::{
     ctx::Context,
     models::{ModelController, Ticket, TicketFC},
-    templates::{TicketCreate, TicketTemplate, TicketsList, TicketsTable, TicketsTemplate},
+    templates::{
+        EditTicketDescription, TicketCreate, TicketTemplate, TicketsList, TicketsTable,
+        TicketsTemplate,
+    },
 };
 
 pub fn routes() -> Router {
@@ -18,9 +21,11 @@ pub fn routes() -> Router {
         .route("/tickets", get(get_tickets))
         .route("/tickets/:id", get(get_ticket_by_id))
         .route("/tickets/new", get(ticket_creator))
+        .route("/tickets/:id/edit_description", get(edit_description))
         .route("/tickets", post(create_ticket))
         .route("/tickets/:id", delete(delete_ticket))
         .route("/tickets/:id", put(update_ticket))
+        .route("/tickets/:id/description", post(add_ticket_data))
 }
 
 /// View options
@@ -50,6 +55,11 @@ impl Status {
             Status::Done => "done",
         }
     }
+}
+
+#[derive(Deserialize)]
+struct DescriptionUpdate {
+    pub description: String,
 }
 
 #[derive(Deserialize)]
@@ -97,7 +107,6 @@ async fn get_tickets(
 async fn get_ticket_by_id(
     Extension(mc): Extension<ModelController>,
     ctx: Context,
-    Query(view_params): Query<ViewParams>,
     Path(id): Path<i32>,
 ) -> TicketTemplate {
     println!("->> {:<12} - get_tickets", "HANDLER");
@@ -110,6 +119,10 @@ async fn get_ticket_by_id(
 
 async fn ticket_creator(_ctx: Context) -> TicketCreate {
     TicketCreate {}
+}
+
+async fn edit_description(_ctx: Context, Path(id): Path<i32>) -> EditTicketDescription {
+    EditTicketDescription { ticket_id: id }
 }
 
 async fn create_ticket(
@@ -152,6 +165,20 @@ async fn update_ticket(
         .unwrap();
 
     render_ticket_table(tickets, &referer)
+}
+async fn add_ticket_data(
+    Extension(mc): Extension<ModelController>,
+    ctx: Context,
+    Path(id): Path<i32>,
+    Form(payload): Form<DescriptionUpdate>,
+) -> TicketTemplate {
+    println!("->> {:<12} - update_ticket", "HANDLER");
+
+    let status = payload.description;
+
+    let ticket = mc.update_ticket_description(ctx, id, status).await.unwrap();
+
+    TicketTemplate { ticket }
 }
 
 fn render_ticket_table(tickets: Vec<Ticket>, referer: &str) -> impl IntoResponse {

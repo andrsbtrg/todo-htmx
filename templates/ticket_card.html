@@ -19,7 +19,7 @@
 {% let isdone = "false" -%}
 {% endif -%}
 
-<div class="card">
+<div id="ticket-{{ticket.id}}" class="card">
 	<div class="card-header">{{ ticket.title }}</div>
 	<div class="card-body">
 		<p class="small-text">{{ticket.created_at|fmtdate}}</p>

@@ -55,6 +55,12 @@ pub struct TicketsList {
 pub struct TicketCreate {}
 
 #[derive(Template)]
+#[template(path = "edit_description.html")]
+pub struct EditTicketDescription {
+    pub ticket_id: i32,
+}
+
+#[derive(Template)]
 #[template(path = "profile.html")]
 pub struct ProfileTemplate {
     pub username: String,

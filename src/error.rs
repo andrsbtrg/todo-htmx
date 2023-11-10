@@ -25,6 +25,7 @@ pub enum Error {
     /// Change ticket state failed
     UpdateTicketError,
     DatabaseError,
+    TicketUpdateFailed,
 }
 
 impl IntoResponse for Error {
