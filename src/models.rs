@@ -273,4 +273,24 @@ INNER JOIN users ON tickets.creator_id = users.user_id;
             }
         }
     }
+
+    pub async fn get_ticket(&self, ctx: Context, id: i32) -> Result<Ticket> {
+        let _creator_id = ctx.user_id();
+
+        let pool = self.db.lock().unwrap().to_owned();
+
+        match sqlx::query_as::<Postgres, Ticket>(r#"
+SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.created_at, tickets.creator_id, users.username AS creator_name
+FROM tickets
+INNER JOIN users ON tickets.creator_id = users.user_id
+WHERE tickets.id = $1;
+        "#)
+            .bind(id)
+            .fetch_one(&pool)
+            .await
+        {
+            Ok(ticket) => Ok(ticket),
+            Err(_) => Err(Error::NoTicketsFound),
+        }
+    }
 }

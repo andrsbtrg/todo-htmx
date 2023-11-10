@@ -16,6 +16,7 @@ use crate::{
 pub fn routes() -> Router {
     Router::new()
         .route("/tickets", get(get_tickets))
+        .route("/tickets/:id", get(get_ticket_by_id))
         .route("/tickets/new", get(ticket_creator))
         .route("/tickets", post(create_ticket))
         .route("/tickets/:id", delete(delete_ticket))
@@ -91,6 +92,20 @@ async fn get_tickets(
         tickets_doing,
         tickets_done,
     }
+}
+
+async fn get_ticket_by_id(
+    Extension(mc): Extension<ModelController>,
+    ctx: Context,
+    Query(view_params): Query<ViewParams>,
+    Path(id): Path<i32>,
+) -> TicketTemplate {
+    println!("->> {:<12} - get_tickets", "HANDLER");
+
+    println!("searching: {id}");
+
+    let ticket = mc.get_ticket(ctx, id).await.unwrap();
+    TicketTemplate { ticket }
 }
 
 async fn ticket_creator(_ctx: Context) -> TicketCreate {

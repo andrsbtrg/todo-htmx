@@ -6,9 +6,10 @@
 	</div>
 	<div id="todo-list">
 		{% for ticket in tickets_todo %}
-		<div class="list-item-parent">
-			<p>{{ ticket.title }}</p>
-
+		<div class="list-item-parent" id="ticket-{{ticket.id}}">
+			<p class="clickable" hx-target="#ticket-{{ticket.id}}" hx-swap="outerHTML" hx-trigger="click"
+				hx-get="/tickets/{{ticket.id}}">
+				{{ticket.title}}</p>
 			<select class="status-indicator-list" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
 				hx-target="#ticket-list" hx-swap="outerHTML">
 				<option selected value="to-do">to-do</option>
@@ -29,8 +30,10 @@
 
 	<div id="doing-list">
 		{% for ticket in tickets_doing %}
-		<div class="list-item-parent">
-			<p>{{ ticket.title }}</p>
+		<div class="list-item-parent" id="ticket-{{ticket.id}}">
+			<p class="clickable" hx-target="#ticket-{{ticket.id}}" hx-swap="outerHTML" hx-trigger="click"
+				hx-get="/tickets/{{ticket.id}}">
+				{{ticket.title}}</p>
 
 			<select class="status-indicator-list" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
 				hx-target="#ticket-list" hx-swap="outerHTML">
@@ -50,8 +53,9 @@
 	</div>
 	<div id="doing-list">
 		{% for ticket in tickets_done %}
-		<div class="list-item-parent">
-			<p>{{ ticket.title }}</p>
+		<div class="list-item-parent" id="ticket-{{ticket.id}}">
+			<p class="clickable" hx-target="#ticket-{{ticket.id}}" hx-swap="outerHTML" hx-trigger="click"
+				hx-get="/tickets/{{ticket.id}}">{{ticket.title}}</p>
 
 			<select class="status-indicator-list" name="status" id="status" hx-put="/tickets/{{ticket.id}}"
 				hx-target="#ticket-list" hx-swap="outerHTML">
