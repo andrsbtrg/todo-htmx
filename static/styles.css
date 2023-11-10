@@ -252,10 +252,7 @@ input:invalid {
 .status-indicator-list {
     background: var(--primary);
     border-radius: 10px;
-    /* position: absolute; */
     padding: 9px;
-    /* right: 7px; */
-    /* bottom: 7px; */
     text-align: center;
     max-width: 100px;
     border: none;
@@ -267,7 +264,6 @@ input:invalid {
     background: #5686F5;
 }
 .delete-button {
-    /* background-color: #ff4d4f; */
     background-color: var(--secondary);
     color: white;
     border: none;
@@ -276,10 +272,9 @@ input:invalid {
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s ease;
-    /* margin-top: 10px; */
     position: absolute;
-    left: 0px;
-    top: -58px;
+    right: 0px;
+    bottom: 0px;
 }
 
 .delete-button:hover {
