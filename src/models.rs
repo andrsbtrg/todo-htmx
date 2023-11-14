@@ -118,8 +118,7 @@ impl ModelController {
         match sqlx::query_as::<Postgres, Ticket>(r#"
 SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.created_at, tickets.creator_id, users.username AS creator_name
 FROM tickets
-INNER JOIN users ON tickets.creator_id = users.user_id;
-        "#)
+INNER JOIN users ON tickets.creator_id = users.user_id;"#)
             .fetch_all(&pool)
             .await
         {
@@ -224,7 +223,7 @@ INNER JOIN users ON tickets.creator_id = users.user_id;
         }
     }
 
-    pub async fn update_ticket(&self, _ctx: &Context, id: i32, arg: &str) -> Result<Vec<Ticket>> {
+    pub async fn update_ticket(&self, _ctx: &Context, id: i32, arg: &str) -> Result<()> {
         let pool = self.db.lock().unwrap().to_owned();
 
         let transaction = pool
@@ -233,35 +232,13 @@ INNER JOIN users ON tickets.creator_id = users.user_id;
             .map_err(|_| Error::DatabaseError)
             .unwrap();
         // Perform the UPDATE operation
-        match sqlx::query("UPDATE tickets SET status = $1 WHERE id = $2")
+        match sqlx::query("UPDATE tickets SET status = ($1) WHERE id = ($2);")
             .bind(arg)
             .bind(id)
             .execute(&pool)
             .await
         {
-            Ok(_) => {
-                // If the UPDATE is successful, perform the SELECT operation
-                match sqlx::query_as::<Postgres, Ticket>(
-                r#"
-    SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.created_at, tickets.creator_id, users.username AS creator_name
-    FROM tickets
-    INNER JOIN users ON tickets.creator_id = users.user_id;
-                "#,
-            )
-            .fetch_all(&pool)
-            .await
-            {
-                Ok(tickets) => {
-                    // Commit the transaction
-                    Ok(tickets)
-                }
-                Err(e) => {
-                    // Rollback the transaction on SELECT error
-                    eprintln!("{:?}", e);
-                    Err(Error::UpdateTicketError)
-                }
-            }
-            }
+            Ok(_) => Ok(()),
             Err(e) => {
                 // Rollback the transaction on UPDATE error
                 let _ = transaction
@@ -274,7 +251,7 @@ INNER JOIN users ON tickets.creator_id = users.user_id;
         }
     }
 
-    pub async fn get_ticket(&self, ctx: Context, id: i32) -> Result<Ticket> {
+    pub async fn get_ticket(&self, ctx: &Context, id: i32) -> Result<Ticket> {
         let _creator_id = ctx.user_id();
 
         let pool = self.db.lock().unwrap().to_owned();
@@ -296,10 +273,10 @@ WHERE tickets.id = $1;
 
     pub async fn update_ticket_description(
         &self,
-        ctx: Context,
+        _ctx: &Context,
         id: i32,
         description: String,
-    ) -> Result<Ticket> {
+    ) -> Result<()> {
         let pool = self.db.lock().unwrap().to_owned();
         dbg!(id);
 
@@ -315,31 +292,7 @@ WHERE tickets.id = $1;
             .execute(&pool)
             .await
         {
-            Ok(_) => {
-                // If the UPDATE is successful, perform the SELECT operation
-                match sqlx::query_as::<Postgres, Ticket>(
-                r#"
-    SELECT tickets.id, tickets.title, tickets.status, tickets.description, tickets.created_at, tickets.creator_id, users.username AS creator_name
-    FROM tickets
-    INNER JOIN users ON tickets.creator_id = users.user_id
-    WHERE tickets.id = $1;
-                "#,
-            )
-            .bind(id)
-            .fetch_one(&pool)
-            .await
-            {
-                Ok(tickets) => {
-                    // Commit the transaction
-                    Ok(tickets)
-                }
-                Err(e) => {
-                    // Rollback the transaction on SELECT error
-                    eprintln!("{:?}", e);
-                    Err(Error::UpdateTicketError)
-                }
-            }
-            }
+            Ok(_) => Ok(()),
             Err(e) => {
                 // Rollback the transaction on UPDATE error
                 let _ = transaction
