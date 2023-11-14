@@ -75,7 +75,8 @@ async fn get_tickets(
     Extension(mc): Extension<ModelController>,
     ctx: Context,
     Query(view_params): Query<ViewParams>,
-) -> TicketsTemplate {
+    headers: HeaderMap,
+) -> impl IntoResponse {
     println!("->> {:<12} - get_tickets", "HANDLER");
     let tickets = mc.get_tickets(&ctx).await.unwrap_or_default();
     let username = ctx.username();
@@ -95,12 +96,29 @@ async fn get_tickets(
 
     let view: View = view_params.view.unwrap_or(View::Table);
 
-    TicketsTemplate {
-        username: username.to_string(),
-        view_type: view,
-        tickets_todo,
-        tickets_doing,
-        tickets_done,
+    match headers.get("hx-request") {
+        Some(_) => match view {
+            View::Table => TicketsTable {
+                tickets_todo,
+                tickets_doing,
+                tickets_done,
+            }
+            .into_response(),
+            View::List => TicketsList {
+                tickets_todo,
+                tickets_doing,
+                tickets_done,
+            }
+            .into_response(),
+        },
+        None => TicketsTemplate {
+            username: username.to_string(),
+            view_type: view,
+            tickets_todo,
+            tickets_doing,
+            tickets_done,
+        }
+        .into_response(),
     }
 }
 
@@ -111,9 +129,7 @@ async fn get_ticket_by_id(
 ) -> TicketTemplate {
     println!("->> {:<12} - get_tickets", "HANDLER");
 
-    println!("searching: {id}");
-
-    let ticket = mc.get_ticket(ctx, id).await.unwrap();
+    let ticket = mc.get_ticket(&ctx, id).await.unwrap();
     TicketTemplate { ticket }
 }
 
@@ -159,10 +175,11 @@ async fn update_ticket(
 
     let referer: String = headers.get(REFERER).unwrap().to_str().unwrap().to_string();
 
-    let tickets = mc
+    let _ = mc
         .update_ticket(&ctx, id, payload.status.as_str())
         .await
         .unwrap();
+    let tickets = mc.get_tickets(&ctx).await.unwrap();
 
     render_ticket_table(tickets, &referer)
 }
@@ -176,9 +193,12 @@ async fn add_ticket_data(
 
     let status = payload.description;
 
-    let ticket = mc.update_ticket_description(ctx, id, status).await.unwrap();
-    dbg!(&ticket);
+    let _ = mc
+        .update_ticket_description(&ctx, id, status)
+        .await
+        .unwrap();
 
+    let ticket = mc.get_ticket(&ctx, id).await.unwrap();
     TicketTemplate { ticket }
 }
 
