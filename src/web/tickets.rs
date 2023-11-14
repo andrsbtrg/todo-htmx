@@ -94,31 +94,41 @@ async fn get_tickets(
         }
     }
 
-    let view: View = view_params.view.unwrap_or(View::Table);
-
-    match headers.get("hx-request") {
-        Some(_) => match view {
-            View::Table => TicketsTable {
-                tickets_todo,
-                tickets_doing,
-                tickets_done,
-            }
-            .into_response(),
-            View::List => TicketsList {
+    match view_params.view {
+        Some(view) => match headers.get("hx-request") {
+            Some(_) => match view {
+                View::Table => TicketsTable {
+                    tickets_todo,
+                    tickets_doing,
+                    tickets_done,
+                }
+                .into_response(),
+                View::List => TicketsList {
+                    tickets_todo,
+                    tickets_doing,
+                    tickets_done,
+                }
+                .into_response(),
+            },
+            None => TicketsTemplate {
+                username: username.to_string(),
+                view_type: view,
                 tickets_todo,
                 tickets_doing,
                 tickets_done,
             }
             .into_response(),
         },
-        None => TicketsTemplate {
-            username: username.to_string(),
-            view_type: view,
-            tickets_todo,
-            tickets_doing,
-            tickets_done,
+        None => {
+            return TicketsTemplate {
+                username: username.to_string(),
+                view_type: View::Table,
+                tickets_todo,
+                tickets_doing,
+                tickets_done,
+            }
+            .into_response();
         }
-        .into_response(),
     }
 }
 
