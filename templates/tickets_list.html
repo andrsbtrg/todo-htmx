@@ -3,6 +3,7 @@
 	<div class="inline">
 		<h3 class="inline">to-do</h3>
 		<p class="inline"> {{ len }} </p>
+		<button hx-get="/tickets/new" hx-target="#todo-list" hx-swap="afterbegin" class="add-button">+</button>
 	</div>
 	<div id="todo-list">
 		{% for ticket in tickets_todo %}
