@@ -12,20 +12,13 @@
 {% endblock %}
 
 {% block content %}
-<div class="header-inline"> 
-   <h1>My Tickets</h1>
-   <a href="/tickets">
-      <img src="/icons/table2-columns.svg" class="svg-icon"/>
-      Table
-   </a>
+<h1>My Tickets</h1>
 
-   <div> 
-   <a href="/tickets?view=list"> 
-      <img src="/icons/task-list.svg" class="svg-icon" />
-      <span>List</span>
-   </a>
-   </div>
-</div>
+<select class="status-indicator-list" name="view" id="view" hx-get="/tickets" hx-target="#ticket-container"
+	hx-swap="outerHTML">
+	<option value="list">List</option>
+	<option value="table">Table</option>
+</select>
 
 {% match view_type %}
 {% when View::Table %}
