@@ -14,11 +14,17 @@
 {% block content %}
 <h1>My Tickets</h1>
 
-<select class="status-indicator-list" name="view" id="view" hx-get="/tickets" hx-target="#ticket-container"
-	hx-swap="outerHTML">
-	<option value="list">List</option>
-	<option value="table">Table</option>
-</select>
+<div class="inline" hx-push-url="true">
+   <select hx-include="next select" class="status-indicator-list" name="view" id="view" hx-get="/tickets" hx-target="#ticket-container" hx-swap="outerHTML">
+      <option selected value="table">Table</option>
+      <option value="list">List</option>
+   </select>
+
+   <select hx-include="previous select" class="status-indicator-list" name="created_by" hx-get="/tickets" hx-target="#ticket-container" hx-swap="outerHTML">
+      <option value="everyone" >Everyone</option>
+      <option value="me" >Me</option>
+   </select>
+</div>
 
 {% match view_type %}
 {% when View::Table %}

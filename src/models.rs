@@ -127,8 +127,7 @@ INNER JOIN users ON tickets.creator_id = users.user_id;"#)
         }
     }
 
-    #[allow(unused)]
-    pub async fn get_user_tickets(&self, ctx: Context) -> Result<Vec<Ticket>> {
+    pub async fn get_user_tickets(&self, ctx: &Context) -> Result<Vec<Ticket>> {
         let pool = self.db.lock().unwrap().to_owned();
         let _creator_id = ctx.user_id();
 

@@ -67,9 +67,18 @@ struct StatusUpdate {
     status: Status,
 }
 
+#[derive(Debug, Deserialize, Clone)]
+enum CreatedBy {
+    #[serde(rename = "everyone")]
+    Everyone,
+    #[serde(rename = "me")]
+    Me,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct ViewParams {
     view: Option<View>,
+    created_by: Option<CreatedBy>,
 }
 async fn get_tickets(
     Extension(mc): Extension<ModelController>,
@@ -78,7 +87,16 @@ async fn get_tickets(
     headers: HeaderMap,
 ) -> impl IntoResponse {
     println!("->> {:<12} - get_tickets", "HANDLER");
-    let tickets = mc.get_tickets(&ctx).await.unwrap_or_default();
+
+    let created_by = view_params.created_by.unwrap_or(CreatedBy::Everyone);
+
+    let mut tickets = match created_by {
+        CreatedBy::Everyone => mc.get_tickets(&ctx).await.unwrap(),
+        CreatedBy::Me => mc.get_user_tickets(&ctx).await.unwrap(),
+    };
+
+    tickets.sort_by(|a, b| a.created_at.partial_cmp(&b.created_at).unwrap());
+
     let username = ctx.username();
 
     let mut tickets_todo: Vec<Ticket> = Vec::new();
